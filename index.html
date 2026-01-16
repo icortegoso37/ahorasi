@@ -859,6 +859,7 @@
                 <div class="card-header"><h2 class="card-title">ℹ️ Información</h2></div>
                 <p style="color: var(--text-secondary); line-height: 1.8;"><strong>Cartiños </strong><br>Xestión financeira persoal en galego.<br>Feito con  💙 dende Galicia.<br>Biquiños  😘</p>
             </div>
+        </section>
 
     <!-- MODALS -->
     <div class="modal-overlay" id="accountModal">
@@ -1389,7 +1390,8 @@
     function updateAllUI() {
         updateMainDisplay(); updateAccountsList(); updateIncomesList(); updateExpensesList();
         updateRecurringList(); updateSavingsList(); updateDebtsList(); updateRecentMovements();
-        updateSystemStatus(); updateNotificationUI(); updateDashboardChart();
+        // updateSystemStatus(); // Comentado: elemento 'systemStatus' no existe en el DOM
+        updateNotificationUI(); updateDashboardChart();
     }
     async function loadData() {
         const d = await Database.getAllData();
@@ -1544,7 +1546,7 @@
             }, 1000);
 
         } catch(e) {
-            console.error('Init error:', e);
+            // console.error('Init error:', e); // Comentado para producción
             vibrate(); toast('Erro ao iniciar: ' + e.message, 'error');
         }
     }
