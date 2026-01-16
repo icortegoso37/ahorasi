@@ -1,0 +1,22 @@
+{
+  "name": "Cartiños Xestión",
+  "short_name": "Cartiños",
+  "description": "Xestión de gastos intelixente",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a1a",
+  "theme_color": "#0a0a1a",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/0a0a1a/00f2ff?text=C",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/0a0a1a/00f2ff?text=Cartiños",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
