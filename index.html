@@ -2,7 +2,9 @@
 <html lang="gl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Cartiños - Xestión Financeira Persoal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -28,15 +30,20 @@
             --gradient-card: linear-gradient(145deg, rgba(40, 40, 80, 0.6) 0%, rgba(20, 20, 50, 0.8) 100%);
             --gradient-button: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 100%);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { 
+            touch-action: manipulation;
+            -webkit-overflow-scrolling: touch;
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Rajdhani', sans-serif;
             background: var(--gradient-main);
             color: var(--text-primary);
             min-height: 100vh;
-            overflow-x: hidden;
+            min-height: -webkit-fill-available;
             position: relative;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
         }
         body::before {
             content: '';
@@ -64,56 +71,47 @@
             z-index: 1;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
         }
         header {
             text-align: center;
-            padding: 20px 20px 15px;
-            margin-bottom: 20px;
+            padding: 15px 15px 10px;
+            margin-bottom: 15px;
         }
         .logo {
             font-family: 'Orbitron', monospace;
-            font-size: 3rem;
+            font-size: 2.2rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: 0.15em;
-            animation: logoGlow 3s ease-in-out infinite alternate;
-        }
-        @keyframes logoGlow {
-            0% { filter: drop-shadow(0 0 20px rgba(255, 110, 199, 0.5)); }
-            100% { filter: drop-shadow(0 0 40px rgba(0, 245, 255, 0.6)); }
+            letter-spacing: 0.1em;
         }
         .subtitle {
             font-family: 'Space Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-top: 8px;
-            letter-spacing: 0.3em;
+            margin-top: 5px;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
         }
         .notification-bell {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             z-index: 100;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-glow);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        .notification-bell:hover {
-            transform: scale(1.1);
-            box-shadow: var(--shadow-neon);
+            font-size: 1.3rem;
+            touch-action: manipulation;
         }
         .notification-badge {
             position: absolute;
@@ -121,22 +119,24 @@
             right: -5px;
             background: #ff4757;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: bold;
-            width: 20px;
-            height: 20px;
+            min-width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2px;
         }
         .notification-badge.hidden { display: none; }
         .notification-panel {
             position: fixed;
-            top: 80px;
-            right: 20px;
-            width: 350px;
-            max-height: 500px;
+            top: 70px;
+            right: 10px;
+            left: 10px;
+            max-width: 400px;
+            max-height: 70vh;
             background: var(--bg-secondary);
             border: 1px solid var(--border-glow);
             border-radius: 16px;
@@ -145,16 +145,9 @@
             display: none;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
-        .notification-panel.active {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .notification-panel.active { display: block; }
         .notification-header {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border-glow);
             display: flex;
             justify-content: space-between;
@@ -162,36 +155,36 @@
         }
         .notification-title {
             font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--accent-cyan);
         }
         .notification-list {
-            max-height: 400px;
+            max-height: calc(70vh - 50px);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .notification-item {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid rgba(255, 110, 199, 0.1);
             cursor: pointer;
-            transition: background 0.3s;
         }
-        .notification-item:hover { background: rgba(255, 110, 199, 0.1); }
         .notification-item.unread { border-left: 3px solid var(--accent-cyan); }
         .notification-item-title {
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 0.9rem;
         }
         .notification-item-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
         }
         .notification-item-time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            margin-top: 5px;
+            margin-top: 4px;
         }
         .notif-icon { font-size: 1rem; }
         .notif-warning { color: var(--accent-yellow); }
@@ -201,234 +194,185 @@
         .main-display {
             background: var(--gradient-card);
             border: 1px solid var(--border-glow);
-            border-radius: 24px;
-            padding: 35px;
-            margin-bottom: 25px;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-neon);
         }
-        .main-display::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(255, 110, 199, 0.1), transparent, rgba(0, 245, 255, 0.1), transparent);
-            animation: rotate 20s linear infinite;
-            z-index: 0;
-        }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
         .main-display-content {
             position: relative;
             z-index: 1;
         }
         .available-label {
             font-family: 'Space Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--accent-cyan);
             text-transform: uppercase;
-            letter-spacing: 0.4em;
-            margin-bottom: 8px;
+            letter-spacing: 0.3em;
+            margin-bottom: 6px;
         }
         .available-amount {
             font-family: 'Orbitron', monospace;
-            font-size: 4rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: var(--text-primary);
             text-shadow: 0 0 30px rgba(255, 110, 199, 0.5);
             line-height: 1;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        .available-amount.negative {
-            color: #ff4757;
-            text-shadow: 0 0 30px rgba(255, 71, 87, 0.5);
-        }
-        .available-amount.positive {
-            color: var(--accent-green);
-            text-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
-        }
+        .available-amount.negative { color: #ff4757; }
+        .available-amount.positive { color: var(--accent-green); }
         .secondary-amount {
             font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--text-muted);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .secondary-amount span { color: var(--text-secondary); }
         .secondary-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
         }
         .info-item { text-align: center; }
         .info-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
         }
         .info-value {
             font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--text-secondary);
-            margin-top: 4px;
+            margin-top: 2px;
         }
         .fab-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 25px;
+            right: 20px;
             z-index: 50;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             align-items: flex-end;
         }
         .fab {
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            appearance: none;
         }
-        .fab:hover { transform: scale(1.1); }
+        .fab:active { transform: scale(0.95); }
         .fab-income {
             background: linear-gradient(135deg, var(--accent-green) 0%, #00b894 100%);
             color: white;
         }
-        .fab-income:hover { box-shadow: 0 6px 30px rgba(57, 255, 20, 0.5); }
         .fab-expense {
             background: linear-gradient(135deg, var(--accent-pink) 0%, #e84393 100%);
             color: white;
         }
-        .fab-expense:hover { box-shadow: 0 6px 30px rgba(255, 110, 199, 0.5); }
         .fab-transfer {
             background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
             color: white;
-            width: 50px;
-            height: 50px;
-            font-size: 1.3rem;
-        }
-        .fab-label {
-            position: absolute;
-            right: 70px;
-            background: var(--bg-tertiary);
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateX(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        .fab:hover .fab-label {
-            opacity: 1;
-            transform: translateX(0);
+            width: 46px;
+            height: 46px;
+            font-size: 1.2rem;
         }
         .nav-tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
             justify-content: center;
+            padding: 0 5px;
         }
         .nav-tab {
             font-family: 'Rajdhani', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            padding: 10px 18px;
+            padding: 8px 12px;
             background: var(--bg-tertiary);
             border: 1px solid transparent;
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-        .nav-tab:hover {
-            background: rgba(255, 110, 199, 0.1);
-            border-color: var(--border-glow);
-            color: var(--text-primary);
+            letter-spacing: 0.05em;
+            touch-action: manipulation;
+            -webkit-appearance: none;
         }
         .nav-tab.active {
             background: var(--gradient-button);
             color: var(--text-primary);
-            box-shadow: 0 0 20px rgba(255, 110, 199, 0.4);
+            box-shadow: 0 0 15px rgba(255, 110, 199, 0.4);
         }
-        .section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
+        .section { display: none; }
         .section.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         .card {
             background: var(--gradient-card);
             border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 18px;
-            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 15px;
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 110, 199, 0.2);
             flex-wrap: wrap;
             gap: 10px;
         }
         .card-title {
             font-family: 'Orbitron', monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--accent-cyan);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
         }
         .btn {
             font-family: 'Rajdhani', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            padding: 9px 18px;
+            padding: 10px 16px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            min-height: 44px;
         }
+        .btn:active { transform: scale(0.98); }
         .btn-primary {
             background: var(--gradient-button);
             color: var(--text-primary);
             box-shadow: 0 4px 15px rgba(255, 110, 199, 0.3);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 110, 199, 0.5);
         }
         .btn-secondary {
             background: transparent;
             border: 1px solid var(--accent-cyan);
             color: var(--accent-cyan);
         }
-        .btn-secondary:hover { background: rgba(0, 245, 255, 0.1); }
         .btn-danger {
             background: linear-gradient(135deg, #ff4757 0%, #c0392b 100%);
             color: var(--text-primary);
@@ -442,25 +386,27 @@
             gap: 8px;
             flex-wrap: wrap;
         }
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 16px; }
         .form-label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
         }
         .form-input, .form-select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: var(--bg-primary);
             border: 1px solid rgba(255, 110, 199, 0.2);
             border-radius: 8px;
             color: var(--text-primary);
             font-family: 'Rajdhani', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 16px;
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 48px;
         }
         .form-input:focus, .form-select:focus {
             outline: none;
@@ -470,80 +416,73 @@
         .form-input::placeholder { color: var(--text-muted); }
         .form-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
         .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px;
+            padding: 12px;
             background: rgba(10, 10, 26, 0.6);
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-left: 3px solid var(--accent-pink);
-            transition: all 0.3s ease;
-        }
-        .list-item:hover {
-            background: rgba(10, 10, 26, 0.9);
-            transform: translateX(5px);
         }
         .list-item-info {
             flex: 1;
             min-width: 0;
+            margin-right: 10px;
         }
         .list-item-name {
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-bottom: 2px;
+            font-size: 0.9rem;
         }
         .list-item-details {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
         .list-item-amount {
             font-family: 'Orbitron', monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-right: 12px;
+            margin-right: 8px;
             white-space: nowrap;
         }
         .list-item-amount.income { color: var(--accent-green); }
         .list-item-amount.expense { color: var(--accent-pink); }
         .list-item-amount.neutral { color: var(--accent-cyan); }
-        .list-item-actions {
-            display: flex;
-            gap: 6px;
-        }
+        .list-item-actions { display: flex; gap: 6px; }
         .btn-icon {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
+            min-height: 36px;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .checkbox-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
+            padding: 8px 0;
+            touch-action: manipulation;
         }
         .checkbox-custom {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: var(--bg-primary);
             border: 2px solid var(--accent-cyan);
-            border-radius: 5px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
             flex-shrink: 0;
         }
         .checkbox-custom.checked { background: var(--accent-cyan); }
@@ -551,7 +490,7 @@
             content: '✓';
             color: var(--bg-primary);
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
         .toast-container {
             position: fixed;
@@ -559,117 +498,106 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            width: 90%;
+            max-width: 350px;
         }
         .toast {
             background: var(--gradient-card);
             border: 1px solid var(--accent-green);
             border-radius: 12px;
-            padding: 16px 24px;
+            padding: 14px 20px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            animation: toastIn 0.4s ease;
-            max-width: 90vw;
+            margin-bottom: 8px;
             text-align: center;
         }
         .toast.error { border-color: #ff4757; }
         .toast.warning { border-color: var(--accent-yellow); }
         .toast.info { border-color: var(--accent-cyan); }
-        @keyframes toastIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .toast-message {
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
+        .toast-message { font-size: 0.9rem; color: var(--text-primary); }
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            backdrop-filter: blur(5px);
-            padding: 20px;
+            padding: 20px 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .modal-overlay.active { display: flex; }
         .modal {
             background: var(--bg-secondary);
             border: 1px solid var(--border-glow);
-            border-radius: 20px;
-            padding: 25px;
-            max-width: 500px;
+            border-radius: 16px;
+            padding: 20px;
             width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            max-width: 450px;
+            margin: auto 0;
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .modal-title {
             font-family: 'Orbitron', monospace;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--accent-cyan);
         }
         .modal-close {
-            background: transparent;
-            border: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glow);
             color: var(--text-secondary);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             cursor: pointer;
-            transition: color 0.3s;
             line-height: 1;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
-        .modal-close:hover { color: var(--accent-pink); }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
         }
         .stat-card {
             background: rgba(10, 10, 26, 0.6);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 10px;
+            padding: 14px;
             text-align: center;
             border: 1px solid rgba(255, 110, 199, 0.1);
         }
         .stat-value {
             font-family: 'Orbitron', monospace;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .stat-label {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
         }
         .progress-bar {
-            height: 8px;
+            height: 6px;
             background: var(--bg-primary);
-            border-radius: 4px;
+            border-radius: 3px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .progress-fill {
             height: 100%;
             background: var(--gradient-button);
-            border-radius: 4px;
-            transition: width 0.5s ease;
+            border-radius: 3px;
         }
         .progress-fill.success { background: linear-gradient(135deg, var(--accent-green), #00b894); }
         .progress-fill.warning { background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange)); }
@@ -678,1726 +606,934 @@
             background: rgba(255, 71, 87, 0.1);
             border: 1px solid #ff4757;
             border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 18px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
             display: none;
         }
-        .alert-box.visible {
-            display: block;
-            animation: shake 0.5s ease;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .alert-title {
-            font-weight: 700;
-            color: #ff4757;
-            margin-bottom: 5px;
-        }
+        .alert-box.visible { display: block; }
+        .alert-title { font-weight: 700; color: #ff4757; margin-bottom: 4px; font-size: 0.9rem; }
         .empty-state {
             text-align: center;
-            padding: 35px;
+            padding: 30px 20px;
             color: var(--text-muted);
         }
-        .empty-state-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
+        .empty-state-icon { font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
         .chart-container {
             position: relative;
-            height: 300px;
-            margin: 20px 0;
+            height: 250px;
+            margin: 15px 0;
         }
         .simulator-horizon {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
         .horizon-btn {
-            padding: 10px 20px;
+            padding: 10px 16px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border-glow);
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text-secondary);
             cursor: pointer;
             font-family: 'Rajdhani', sans-serif;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            font-size: 0.85rem;
+            touch-action: manipulation;
+            min-height: 44px;
         }
-        .horizon-btn:hover, .horizon-btn.active {
+        .horizon-btn.active {
             background: var(--gradient-button);
             color: var(--text-primary);
         }
         .simulator-alert {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            align-items: flex-start;
+            gap: 10px;
         }
-        .simulator-alert.warning {
-            background: rgba(255, 217, 61, 0.1);
-            border: 1px solid var(--accent-yellow);
-        }
-        .simulator-alert.danger {
-            background: rgba(255, 71, 87, 0.1);
-            border: 1px solid #ff4757;
-        }
-        .simulator-alert.success {
-            background: rgba(57, 255, 20, 0.1);
-            border: 1px solid var(--accent-green);
-        }
-        .simulator-alert-icon { font-size: 1.5rem; }
-        .simulator-alert-text { flex: 1; }
+        .simulator-alert.warning { background: rgba(255, 217, 61, 0.1); border: 1px solid var(--accent-yellow); }
+        .simulator-alert.danger { background: rgba(255, 71, 87, 0.1); border: 1px solid #ff4757; }
+        .simulator-alert.success { background: rgba(57, 255, 20, 0.1); border: 1px solid var(--accent-green); }
+        .simulator-alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .simulator-alert-text { flex: 1; font-size: 0.85rem; }
         .pattern-card {
             background: rgba(168, 85, 247, 0.1);
             border: 1px solid var(--accent-purple);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
         }
-        .pattern-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .pattern-icon { font-size: 1.5rem; }
-        .pattern-title {
-            font-weight: 600;
-            color: var(--accent-purple);
-        }
-        .pattern-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-        .pattern-amount {
-            font-family: 'Orbitron', monospace;
-            color: var(--accent-pink);
-            font-weight: 600;
-        }
-        .debt-direction {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+        .pattern-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .pattern-icon { font-size: 1.2rem; }
+        .pattern-title { font-weight: 600; color: var(--accent-purple); font-size: 0.9rem; }
+        .pattern-description { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
+        .pattern-amount { font-family: 'Orbitron', monospace; color: var(--accent-pink); font-weight: 600; }
+        .debt-direction { display: flex; gap: 10px; margin-bottom: 15px; }
         .debt-direction-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 10px;
             background: var(--bg-tertiary);
             border: 2px solid transparent;
             border-radius: 10px;
             color: var(--text-secondary);
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s;
+            font-size: 0.85rem;
+            touch-action: manipulation;
+            min-height: 60px;
         }
-        .debt-direction-btn.active {
-            border-color: var(--accent-cyan);
-            color: var(--text-primary);
-        }
-        .debt-direction-btn .icon {
-            font-size: 1.5rem;
-            display: block;
-            margin-bottom: 5px;
-        }
+        .debt-direction-btn.active { border-color: var(--accent-cyan); color: var(--text-primary); }
+        .debt-direction-btn .icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
         .test-status {
             position: fixed;
             top: 10px;
             left: 10px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.7rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.65rem;
             font-family: 'Space Mono', monospace;
             z-index: 100;
         }
-        .test-status.pass {
-            background: rgba(57, 255, 20, 0.2);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-        }
-        .test-status.fail {
-            background: rgba(255, 71, 87, 0.2);
-            border: 1px solid #ff4757;
-            color: #ff4757;
-        }
+        .test-status.pass { background: rgba(57, 255, 20, 0.2); border: 1px solid var(--accent-green); color: var(--accent-green); }
+        .test-status.fail { background: rgba(255, 71, 87, 0.2); border: 1px solid #ff4757; color: #ff4757; }
         .tag {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 600;
             text-transform: uppercase;
-            margin-left: 8px;
+            margin-left: 6px;
         }
-        .tag-bank {
-            background: rgba(0, 245, 255, 0.2);
-            color: var(--accent-cyan);
-        }
-        .tag-cash {
-            background: rgba(57, 255, 20, 0.2);
-            color: var(--accent-green);
-        }
-        .tag-extra {
-            background: rgba(255, 159, 67, 0.2);
-            color: var(--accent-orange);
-        }
-        @media (max-width: 768px) {
-            .logo { font-size: 2rem; }
-            .available-amount { font-size: 2.8rem; }
-            .main-display { padding: 20px 15px; }
-            .secondary-info { gap: 15px; }
-            .nav-tabs { gap: 5px; }
-            .nav-tab { padding: 8px 12px; font-size: 0.75rem; }
-            .fab-container { bottom: 20px; right: 15px; }
-            .fab { width: 50px; height: 50px; font-size: 1.5rem; }
-            .fab-transfer { width: 42px; height: 42px; }
-            .notification-panel { width: calc(100% - 40px); right: 20px; }
-            .chart-container { height: 250px; }
-        }
-        .piggy-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 20px rgba(255, 110, 199, 0.5));
-        }
+        .tag-bank { background: rgba(0, 245, 255, 0.2); color: var(--accent-cyan); }
+        .tag-cash { background: rgba(57, 255, 20, 0.2); color: var(--accent-green); }
+        .tag-extra { background: rgba(255, 159, 67, 0.2); color: var(--accent-orange); }
+        .piggy-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        select.form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0c0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 35px; }
     </style>
 </head>
 <body>
     <div class="grid-overlay"></div>
-    <div class="test-status" id="testStatus">⏳ Verificando...</div>
-    <div class="notification-bell" onclick="toggleNotificationPanel()">
-        🔔
-        <div class="notification-badge" id="notifBadge">0</div>
-    </div>
+    <div class="test-status" id="testStatus">⏳</div>
+    <div class="notification-bell" id="notifBell">🔔<div class="notification-badge hidden" id="notifBadge">0</div></div>
     <div class="notification-panel" id="notificationPanel">
         <div class="notification-header">
             <span class="notification-title">Notificacións</span>
-            <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.7rem;" onclick="clearAllNotifications()">Limpar</button>
+            <button class="btn btn-secondary" style="padding: 6px 10px; font-size: 0.7rem; min-height: 32px;" id="clearNotifsBtn">Limpar</button>
         </div>
-        <div class="notification-list" id="notificationList">
-            <div class="empty-state" style="padding: 20px;"><p>Sen notificacións</p></div>
-        </div>
+        <div class="notification-list" id="notificationList"><div class="empty-state" style="padding: 20px;"><p>Sen notificacións</p></div></div>
     </div>
     <div class="fab-container">
-        <button class="fab fab-transfer" onclick="openModal('transferModal')" title="Transferencia">
-            <span class="fab-label">Transferir</span>⇄
-        </button>
-        <button class="fab fab-income" onclick="openModal('incomeModal')" title="Novo Ingreso">
-            <span class="fab-label">Ingreso</span>+
-        </button>
-        <button class="fab fab-expense" onclick="openModal('expenseModal')" title="Novo Gasto">
-            <span class="fab-label">Gasto</span>−
-        </button>
+        <button class="fab fab-transfer" id="fabTransfer">⇄</button>
+        <button class="fab fab-income" id="fabIncome">+</button>
+        <button class="fab fab-expense" id="fabExpense">−</button>
     </div>
     <div class="app-container">
         <header>
             <div class="piggy-icon">🐷</div>
             <h1 class="logo">CARTIÑOS</h1>
-            <p class="subtitle">Xestión Financeira Persoal</p>
+            <p class="subtitle">Xestión Financeira</p>
         </header>
-        <div class="alert-box" id="alertBox">
-            <div class="alert-title">⚠️ Erro Crítico</div>
-            <div class="alert-message" id="alertMessage"></div>
-        </div>
+        <div class="alert-box" id="alertBox"><div class="alert-title">⚠️ Erro</div><div id="alertMessage"></div></div>
         <div class="main-display">
             <div class="main-display-content">
                 <div class="available-label">Diñeiro dispoñible hoxe</div>
                 <div class="available-amount" id="availableAmount">0,00 €</div>
                 <div class="secondary-amount">Sen aforro: <span id="availableWithoutSavings">0,00 €</span></div>
                 <div class="secondary-info">
-                    <div class="info-item">
-                        <div class="info-label">Saldo Total</div>
-                        <div class="info-value" id="totalBalance">0,00 €</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Aforro</div>
-                        <div class="info-value" id="totalSavings">0,00 €</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Comprometido</div>
-                        <div class="info-value" id="committedAmount">0,00 €</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Día</div>
-                        <div class="info-value" id="currentDay">1</div>
-                    </div>
+                    <div class="info-item"><div class="info-label">Saldo Total</div><div class="info-value" id="totalBalance">0,00 €</div></div>
+                    <div class="info-item"><div class="info-label">Aforro</div><div class="info-value" id="totalSavings">0,00 €</div></div>
+                    <div class="info-item"><div class="info-label">Comprometido</div><div class="info-value" id="committedAmount">0,00 €</div></div>
+                    <div class="info-item"><div class="info-label">Día</div><div class="info-value" id="currentDay">1</div></div>
                 </div>
             </div>
         </div>
-        <nav class="nav-tabs">
+        <nav class="nav-tabs" id="navTabs">
             <button class="nav-tab active" data-section="dashboard">Panel</button>
             <button class="nav-tab" data-section="accounts">Contas</button>
             <button class="nav-tab" data-section="incomes">Ingresos</button>
             <button class="nav-tab" data-section="expenses">Gastos</button>
-            <button class="nav-tab" data-section="recurring">Recorrentes</button>
+            <button class="nav-tab" data-section="recurring">Fixos</button>
             <button class="nav-tab" data-section="savings">Aforro</button>
             <button class="nav-tab" data-section="debts">Débedas</button>
             <button class="nav-tab" data-section="simulator">Simulador</button>
             <button class="nav-tab" data-section="analysis">Análise</button>
             <button class="nav-tab" data-section="settings">Axustes</button>
         </nav>
-        <!-- PANEL -->
+        <!-- SECTIONS -->
         <section class="section active" id="section-dashboard">
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="statIncomeMonth" style="color: var(--accent-green)">0,00 €</div>
-                    <div class="stat-label">Ingresos mes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statExpenseMonth" style="color: var(--accent-pink)">0,00 €</div>
-                    <div class="stat-label">Gastos mes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statRecurring" style="color: var(--accent-yellow)">0,00 €</div>
-                    <div class="stat-label">Recorrentes pendentes</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="statDailyAvg" style="color: var(--accent-cyan)">0,00 €</div>
-                    <div class="stat-label">Media diaria</div>
-                </div>
+                <div class="stat-card"><div class="stat-value" id="statIncomeMonth" style="color: var(--accent-green)">0,00 €</div><div class="stat-label">Ingresos mes</div></div>
+                <div class="stat-card"><div class="stat-value" id="statExpenseMonth" style="color: var(--accent-pink)">0,00 €</div><div class="stat-label">Gastos mes</div></div>
+                <div class="stat-card"><div class="stat-value" id="statRecurring" style="color: var(--accent-yellow)">0,00 €</div><div class="stat-label">Fixos pendentes</div></div>
+                <div class="stat-card"><div class="stat-value" id="statDailyAvg" style="color: var(--accent-cyan)">0,00 €</div><div class="stat-label">Media diaria</div></div>
             </div>
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">📊 Evolución do Mes</h2></div>
-                <div class="chart-container"><canvas id="dashboardChart"></canvas></div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">🕐 Últimos Movementos</h2></div>
-                <div id="recentMovements"><div class="empty-state"><div class="empty-state-icon">📊</div><p>Aínda non hai movementos</p></div></div>
-            </div>
+            <div class="card"><div class="card-header"><h2 class="card-title">📊 Evolución</h2></div><div class="chart-container"><canvas id="dashboardChart"></canvas></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">🕐 Movementos</h2></div><div id="recentMovements"><div class="empty-state"><div class="empty-state-icon">📊</div><p>Sen movementos</p></div></div></div>
         </section>
-        <!-- CONTAS -->
         <section class="section" id="section-accounts">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">🏦 As Miñas Contas</h2>
-                    <button class="btn btn-primary" onclick="openModal('accountModal')">+ Nova Conta</button>
-                </div>
+                <div class="card-header"><h2 class="card-title">🏦 Contas</h2><button class="btn btn-primary" id="btnNewAccount">+ Nova</button></div>
                 <div id="accountsList"><div class="empty-state"><div class="empty-state-icon">🏦</div><p>Engade a túa primeira conta</p></div></div>
             </div>
         </section>
-        <!-- INGRESOS -->
         <section class="section" id="section-incomes">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">💰 Ingresos</h2>
-                    <button class="btn btn-primary" onclick="openModal('incomeModal')">+ Novo Ingreso</button>
-                </div>
-                <div id="incomesList"><div class="empty-state"><div class="empty-state-icon">💰</div><p>Rexistra os teus ingresos</p></div></div>
+                <div class="card-header"><h2 class="card-title">💰 Ingresos</h2><button class="btn btn-primary" id="btnNewIncome">+ Novo</button></div>
+                <div id="incomesList"><div class="empty-state"><div class="empty-state-icon">💰</div><p>Rexistra ingresos</p></div></div>
             </div>
         </section>
-        <!-- GASTOS -->
         <section class="section" id="section-expenses">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">🛒 Gastos Diarios</h2>
-                    <button class="btn btn-primary" onclick="openModal('expenseModal')">+ Novo Gasto</button>
-                </div>
-                <div id="expensesList"><div class="empty-state"><div class="empty-state-icon">🛒</div><p>Rexistra os teus gastos</p></div></div>
+                <div class="card-header"><h2 class="card-title">🛒 Gastos</h2><button class="btn btn-primary" id="btnNewExpense">+ Novo</button></div>
+                <div id="expensesList"><div class="empty-state"><div class="empty-state-icon">🛒</div><p>Rexistra gastos</p></div></div>
             </div>
         </section>
-        <!-- RECORRENTES -->
         <section class="section" id="section-recurring">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">🔄 Gastos Recorrentes</h2>
-                    <button class="btn btn-primary" onclick="openModal('recurringModal')">+ Novo Recorrente</button>
-                </div>
-                <div id="recurringList"><div class="empty-state"><div class="empty-state-icon">🔄</div><p>Configura os teus gastos fixos</p></div></div>
+                <div class="card-header"><h2 class="card-title">🔄 Gastos Fixos</h2><button class="btn btn-primary" id="btnNewRecurring">+ Novo</button></div>
+                <div id="recurringList"><div class="empty-state"><div class="empty-state-icon">🔄</div><p>Configura gastos fixos</p></div></div>
             </div>
         </section>
-        <!-- AFORRO -->
         <section class="section" id="section-savings">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">🎯 Metas de Aforro</h2>
-                    <button class="btn btn-primary" onclick="openModal('savingsModal')">+ Nova Meta</button>
-                </div>
+                <div class="card-header"><h2 class="card-title">🎯 Metas</h2><button class="btn btn-primary" id="btnNewSavings">+ Nova</button></div>
                 <div id="savingsAlerts"></div>
-                <div id="savingsList"><div class="empty-state"><div class="empty-state-icon">🎯</div><p>Define as túas metas de aforro</p></div></div>
+                <div id="savingsList"><div class="empty-state"><div class="empty-state-icon">🎯</div><p>Define metas de aforro</p></div></div>
             </div>
         </section>
-        <!-- DÉBEDAS -->
         <section class="section" id="section-debts">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">💳 Débedas e Créditos</h2>
-                    <button class="btn btn-primary" onclick="openModal('debtModal')">+ Nova Débeda</button>
-                </div>
-                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.85rem;">ℹ️ As débedas non afectan ao "Diñeiro dispoñible hoxe"</p>
-                <div id="debtsList"><div class="empty-state"><div class="empty-state-icon">💳</div><p>Rexistra débedas e o que che deben</p></div></div>
+                <div class="card-header"><h2 class="card-title">💳 Débedas</h2><button class="btn btn-primary" id="btnNewDebt">+ Nova</button></div>
+                <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.8rem;">ℹ️ Non afectan ao dispoñible</p>
+                <div id="debtsList"><div class="empty-state"><div class="empty-state-icon">💳</div><p>Rexistra débedas</p></div></div>
             </div>
         </section>
-        <!-- SIMULADOR -->
         <section class="section" id="section-simulator">
             <div class="card">
-                <div class="card-header"><h2 class="card-title">🔮 Simulador Financeiro</h2></div>
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">Proxección baseada no teu comportamento actual.</p>
-                <div class="simulator-horizon">
-                    <button class="horizon-btn active" data-months="3">3 meses</button>
-                    <button class="horizon-btn" data-months="6">6 meses</button>
-                    <button class="horizon-btn" data-months="12">1 ano</button>
-                    <button class="horizon-btn" data-months="24">2 anos</button>
-                    <button class="horizon-btn" data-months="60">5 anos</button>
+                <div class="card-header"><h2 class="card-title">🔮 Simulador</h2></div>
+                <div class="simulator-horizon" id="horizonBtns">
+                    <button class="horizon-btn active" data-months="3">3m</button>
+                    <button class="horizon-btn" data-months="6">6m</button>
+                    <button class="horizon-btn" data-months="12">1a</button>
+                    <button class="horizon-btn" data-months="24">2a</button>
+                    <button class="horizon-btn" data-months="60">5a</button>
                 </div>
                 <div id="simulatorAlerts"></div>
-                <div class="stats-grid" id="simulatorStats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="simBalance" style="color: var(--accent-cyan)">0,00 €</div>
-                        <div class="stat-label">Saldo Proxectado</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="simSavings" style="color: var(--accent-green)">0,00 €</div>
-                        <div class="stat-label">Aforro Acumulado</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="simExpenses" style="color: var(--accent-pink)">0,00 €</div>
-                        <div class="stat-label">Gastos Totais</div>
-                    </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value" id="simBalance" style="color: var(--accent-cyan)">0,00 €</div><div class="stat-label">Saldo</div></div>
+                    <div class="stat-card"><div class="stat-value" id="simSavings" style="color: var(--accent-green)">0,00 €</div><div class="stat-label">Aforro</div></div>
                 </div>
                 <div class="chart-container"><canvas id="simulatorChart"></canvas></div>
             </div>
         </section>
-        <!-- ANÁLISE -->
         <section class="section" id="section-analysis">
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">🔍 Detección de Patróns</h2></div>
-                <div id="patternAnalysis"><div class="empty-state"><div class="empty-state-icon">🔍</div><p>Necesítanse máis datos</p></div></div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">📈 Comparativa de Gastos</h2></div>
-                <div class="chart-container"><canvas id="comparisonChart"></canvas></div>
-            </div>
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">📊 Distribución por Categorías</h2></div>
-                <div class="chart-container" style="height: 250px;"><canvas id="categoryChart"></canvas></div>
-            </div>
+            <div class="card"><div class="card-header"><h2 class="card-title">🔍 Patróns</h2></div><div id="patternAnalysis"><div class="empty-state"><div class="empty-state-icon">🔍</div><p>Necesítanse máis datos</p></div></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">📈 Comparativa</h2></div><div class="chart-container"><canvas id="comparisonChart"></canvas></div></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">📊 Categorías</h2></div><div class="chart-container" style="height: 220px;"><canvas id="categoryChart"></canvas></div></div>
         </section>
-        <!-- AXUSTES -->
         <section class="section" id="section-settings">
             <div class="card">
-                <div class="card-header"><h2 class="card-title">💾 Datos e Copia</h2></div>
+                <div class="card-header"><h2 class="card-title">💾 Datos</h2></div>
                 <div class="btn-group">
-                    <button class="btn btn-primary" onclick="exportAllData()">Exportar JSON</button>
-                    <button class="btn btn-secondary" onclick="exportPDF()">Exportar PDF</button>
-                    <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Importar</button>
-                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                    <button class="btn btn-danger" onclick="confirmResetData()">Borrar Todo</button>
+                    <button class="btn btn-primary" id="btnExportJSON">JSON</button>
+                    <button class="btn btn-secondary" id="btnExportPDF">PDF</button>
+                    <button class="btn btn-secondary" id="btnImport">Importar</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                    <button class="btn btn-danger" id="btnReset">Borrar</button>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header"><h2 class="card-title">⚙️ Estado do Sistema</h2></div>
-                <div id="systemStatus"></div>
-            </div>
-            <div class="card">
-                <div class="card">
-                <div class="card-header"><h2 class="card-title">ℹ️ Información</h2></div>
+            <div class="card"><div class="card-header"><h2 class="card-title">ℹ️ Información</h2></div>
                 <p style="color: var(--text-secondary); line-height: 1.8;"><strong>Cartiños </strong><br>Xestión financeira persoal en galego.<br>Feito con  💙 dende Galicia.<br>Biquiños  😘</p>
             </div>
-    <!-- MODAIS -->
+        </section>
+    </div>
+    <!-- MODALS -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Nova Conta</h3>
-                <button class="modal-close" onclick="closeModal('accountModal')">&times;</button>
-            </div>
-            <form id="accountForm" onsubmit="saveAccount(event)">
-                <div class="form-group">
-                    <label class="form-label">Nome da Conta</label>
-                    <input type="text" class="form-input" name="name" placeholder="Ex: Conta Principal" required>
-                </div>
+            <div class="modal-header"><h3 class="modal-title">Nova Conta</h3><button class="modal-close" data-close="accountModal">&times;</button></div>
+            <form id="accountForm">
+                <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" name="name" placeholder="Ex: Conta Principal" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Saldo Actual</label>
-                        <input type="number" class="form-input" name="balance" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tipo</label>
-                        <select class="form-select" name="accountType">
-                            <option value="bank">🏦 Banco</option>
-                            <option value="cash">💵 Efectivo</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label class="form-label">Saldo</label><input type="number" class="form-input" name="balance" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" name="accountType"><option value="bank">🏦 Banco</option><option value="cash">💵 Efectivo</option></select></div>
                 </div>
-                <div class="form-group">
-                    <div class="checkbox-container" onclick="toggleCheckbox(this)">
-                        <div class="checkbox-custom checked" data-name="forDailySpending"></div>
-                        <span>Usar para gasto diario</span>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Conta</button>
+                <div class="form-group"><div class="checkbox-container" id="checkDailySpending"><div class="checkbox-custom checked"></div><span>Para gasto diario</span></div></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="incomeModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Novo Ingreso</h3>
-                <button class="modal-close" onclick="closeModal('incomeModal')">&times;</button>
-            </div>
-            <form id="incomeForm" onsubmit="saveIncome(event)">
-                <div class="form-group">
-                    <label class="form-label">Descrición</label>
-                    <input type="text" class="form-input" name="description" placeholder="Ex: Nómina" required>
+            <div class="modal-header"><h3 class="modal-title">Novo Ingreso</h3><button class="modal-close" data-close="incomeModal">&times;</button></div>
+            <form id="incomeForm">
+                <div class="form-group"><label class="form-label">Descrición</label><input type="text" class="form-input" name="description" placeholder="Ex: Nómina" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Cantidade</label><input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" name="date" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Cantidade</label>
-                        <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Data</label>
-                        <input type="date" class="form-input" name="date" required>
-                    </div>
+                    <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" name="incomeType"><option value="regular">💼 Regular</option><option value="extra">🎁 Extra</option></select></div>
+                    <div class="form-group"><label class="form-label">Conta</label><select class="form-select" name="accountId" required></select></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Tipo</label>
-                        <select class="form-select" name="incomeType">
-                            <option value="regular">💼 Regular (Nómina)</option>
-                            <option value="extra">🎁 Extraordinario</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Conta Destino</label>
-                        <select class="form-select" name="accountId" required><option value="">Selecciona</option></select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Ingreso</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="expenseModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Novo Gasto</h3>
-                <button class="modal-close" onclick="closeModal('expenseModal')">&times;</button>
-            </div>
-            <form id="expenseForm" onsubmit="saveExpense(event)">
-                <div class="form-group">
-                    <label class="form-label">Descrición</label>
-                    <input type="text" class="form-input" name="description" placeholder="Ex: Supermercado" required>
-                </div>
+            <div class="modal-header"><h3 class="modal-title">Novo Gasto</h3><button class="modal-close" data-close="expenseModal">&times;</button></div>
+            <form id="expenseForm">
+                <div class="form-group"><label class="form-label">Descrición</label><input type="text" class="form-input" name="description" placeholder="Ex: Supermercado" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Cantidade</label>
-                        <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Data</label>
-                        <input type="date" class="form-input" name="date" required>
-                    </div>
+                    <div class="form-group"><label class="form-label">Cantidade</label><input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" name="date" required></div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select" name="category">
-                        <option value="alimentacion">🍎 Alimentación</option>
-                        <option value="transporte">🚗 Transporte</option>
-                        <option value="ocio">🎮 Ocio</option>
-                        <option value="saude">💊 Saúde</option>
-                        <option value="roupa">👕 Roupa</option>
-                        <option value="cafe">☕ Café/Snacks</option>
-                        <option value="subscricions">📱 Subscricións</option>
-                        <option value="outros">📦 Outros</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Gasto</button>
+                <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" name="category"><option value="alimentacion">🍎 Alimentación</option><option value="transporte">🚗 Transporte</option><option value="ocio">🎮 Ocio</option><option value="saude">💊 Saúde</option><option value="roupa">👕 Roupa</option><option value="cafe">☕ Café/Snacks</option><option value="subscricions">📱 Subscricións</option><option value="outros">📦 Outros</option></select></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="recurringModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Novo Gasto Recorrente</h3>
-                <button class="modal-close" onclick="closeModal('recurringModal')">&times;</button>
-            </div>
-            <form id="recurringForm" onsubmit="saveRecurring(event)">
-                <div class="form-group">
-                    <label class="form-label">Descrición</label>
-                    <input type="text" class="form-input" name="description" placeholder="Ex: Aluguer" required>
-                </div>
+            <div class="modal-header"><h3 class="modal-title">Novo Gasto Fixo</h3><button class="modal-close" data-close="recurringModal">&times;</button></div>
+            <form id="recurringForm">
+                <div class="form-group"><label class="form-label">Descrición</label><input type="text" class="form-input" name="description" placeholder="Ex: Aluguer" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Cantidade</label>
-                        <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Día de Cobro</label>
-                        <input type="number" class="form-input" name="dayOfMonth" min="1" max="31" placeholder="1-31" required>
-                    </div>
+                    <div class="form-group"><label class="form-label">Cantidade</label><input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Día do mes</label><input type="number" class="form-input" name="dayOfMonth" min="1" max="31" placeholder="1-31" required></div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Categoría</label>
-                    <select class="form-select" name="category">
-                        <option value="vivienda">🏠 Vivenda</option>
-                        <option value="servicios">💡 Servizos</option>
-                        <option value="seguros">🛡️ Seguros</option>
-                        <option value="subscricions">📱 Subscricións</option>
-                        <option value="outros">📦 Outros</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Recorrente</button>
+                <div class="form-group"><label class="form-label">Categoría</label><select class="form-select" name="category"><option value="vivienda">🏠 Vivenda</option><option value="servicios">💡 Servizos</option><option value="seguros">🛡️ Seguros</option><option value="subscricions">📱 Subscricións</option><option value="outros">📦 Outros</option></select></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="savingsModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Nova Meta de Aforro</h3>
-                <button class="modal-close" onclick="closeModal('savingsModal')">&times;</button>
-            </div>
-            <form id="savingsForm" onsubmit="saveSavingsGoal(event)">
-                <div class="form-group">
-                    <label class="form-label">Nome da Meta</label>
-                    <input type="text" class="form-input" name="name" placeholder="Ex: Vacacións" required>
+            <div class="modal-header"><h3 class="modal-title">Nova Meta</h3><button class="modal-close" data-close="savingsModal">&times;</button></div>
+            <form id="savingsForm">
+                <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" name="name" placeholder="Ex: Vacacións" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Obxectivo</label><input type="number" class="form-input" name="targetAmount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Data límite</label><input type="date" class="form-input" name="targetDate"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Obxectivo Total</label>
-                        <input type="number" class="form-input" name="targetAmount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Data Límite</label>
-                        <input type="date" class="form-input" name="targetDate">
-                    </div>
+                    <div class="form-group"><label class="form-label">Aforro/día</label><input type="number" class="form-input" name="dailyAmount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Xa aforrado</label><input type="number" class="form-input" name="currentAmount" placeholder="0.00" step="0.01" value="0"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Aforro Diario</label>
-                        <input type="number" class="form-input" name="dailyAmount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Xa Aforrado</label>
-                        <input type="number" class="form-input" name="currentAmount" placeholder="0.00" step="0.01" value="0">
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Meta</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="debtModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Nova Débeda</h3>
-                <button class="modal-close" onclick="closeModal('debtModal')">&times;</button>
-            </div>
-            <form id="debtForm" onsubmit="saveDebt(event)">
-                <div class="debt-direction">
-                    <button type="button" class="debt-direction-btn active" data-direction="owe" onclick="setDebtDirection(this)">
-                        <span class="icon">📤</span>Debo a alguén
-                    </button>
-                    <button type="button" class="debt-direction-btn" data-direction="owed" onclick="setDebtDirection(this)">
-                        <span class="icon">📥</span>Débenme a min
-                    </button>
+            <div class="modal-header"><h3 class="modal-title">Nova Débeda</h3><button class="modal-close" data-close="debtModal">&times;</button></div>
+            <form id="debtForm">
+                <div class="debt-direction" id="debtDirection">
+                    <button type="button" class="debt-direction-btn active" data-direction="owe"><span class="icon">📤</span>Debo</button>
+                    <button type="button" class="debt-direction-btn" data-direction="owed"><span class="icon">📥</span>Débenme</button>
                 </div>
                 <input type="hidden" name="direction" value="owe">
-                <div class="form-group">
-                    <label class="form-label">Persoa</label>
-                    <input type="text" class="form-input" name="person" placeholder="Ex: María" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Concepto</label>
-                    <input type="text" class="form-input" name="concept" placeholder="Ex: Cea" required>
-                </div>
+                <div class="form-group"><label class="form-label">Persoa</label><input type="text" class="form-input" name="person" placeholder="Ex: María" required></div>
+                <div class="form-group"><label class="form-label">Concepto</label><input type="text" class="form-input" name="concept" placeholder="Ex: Cea" required></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Cantidade Total</label>
-                        <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Xa Pagado</label>
-                        <input type="number" class="form-input" name="paidAmount" placeholder="0.00" step="0.01" value="0">
-                    </div>
+                    <div class="form-group"><label class="form-label">Cantidade</label><input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required></div>
+                    <div class="form-group"><label class="form-label">Xa pagado</label><input type="number" class="form-input" name="paidAmount" placeholder="0.00" step="0.01" value="0"></div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar Débeda</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Gardar</button>
             </form>
         </div>
     </div>
     <div class="modal-overlay" id="transferModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Transferencia entre Contas</h3>
-                <button class="modal-close" onclick="closeModal('transferModal')">&times;</button>
-            </div>
-            <form id="transferForm" onsubmit="saveTransfer(event)">
-                <div class="form-group">
-                    <label class="form-label">Dende</label>
-                    <select class="form-select" name="fromAccount" required><option value="">Selecciona conta orixe</option></select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cara a</label>
-                    <select class="form-select" name="toAccount" required><option value="">Selecciona conta destino</option></select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cantidade</label>
-                    <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required>
-                </div>
+            <div class="modal-header"><h3 class="modal-title">Transferencia</h3><button class="modal-close" data-close="transferModal">&times;</button></div>
+            <form id="transferForm">
+                <div class="form-group"><label class="form-label">Dende</label><select class="form-select" name="fromAccount" required></select></div>
+                <div class="form-group"><label class="form-label">Cara a</label><select class="form-select" name="toAccount" required></select></div>
+                <div class="form-group"><label class="form-label">Cantidade</label><input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" required></div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Transferir</button>
             </form>
         </div>
     </div>
     <div class="toast-container" id="toastContainer"></div>
     <script>
-    // MOTOR FINANCEIRO PURO v2.0
+    // MOTOR FINANCEIRO
     const FinancialEngine = (function() {
-        'use strict';
         function calculateAvailableToday(data) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const currentDay = today.getDate();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
+            const today = new Date(); today.setHours(0,0,0,0);
+            const currentDay = today.getDate(), currentMonth = today.getMonth(), currentYear = today.getFullYear();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             const remainingDays = daysInMonth - currentDay + 1;
-            const dailySpendingBalance = calculateDailySpendingBalance(data.accounts);
-            const committedRecurring = calculateCommittedRecurring(data.recurringExpenses, currentDay);
-            const incomesUntilToday = calculateIncomesUntilToday(data.incomes, today, remainingDays);
-            const dailyExpensesTotal = calculateDailyExpenses(data.expenses, currentMonth, currentYear);
-            const dailySavingsAmount = calculateDailySavingsAmount(data.savingsGoals);
-            const availableToday = dailySpendingBalance - committedRecurring + incomesUntilToday - dailyExpensesTotal - dailySavingsAmount;
-            const availableWithoutSavings = availableToday + dailySavingsAmount;
-            return {
-                availableToday: round2(availableToday),
-                availableWithoutSavings: round2(availableWithoutSavings),
-                breakdown: {
-                    dailySpendingBalance: round2(dailySpendingBalance),
-                    committedRecurring: round2(committedRecurring),
-                    incomesUntilToday: round2(incomesUntilToday),
-                    dailyExpensesTotal: round2(dailyExpensesTotal),
-                    dailySavingsAmount: round2(dailySavingsAmount)
-                }
-            };
-        }
-        function calculateDailySpendingBalance(accounts) {
-            if (!Array.isArray(accounts)) return 0;
-            return accounts.filter(acc => acc && acc.forDailySpending === true).reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0);
-        }
-        function calculateCommittedRecurring(recurringExpenses, currentDay) {
-            if (!Array.isArray(recurringExpenses)) return 0;
-            return recurringExpenses.filter(exp => exp && (parseInt(exp.dayOfMonth) || 1) > currentDay).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-        }
-        function calculateIncomesUntilToday(incomes, today, remainingDays) {
-            if (!Array.isArray(incomes)) return 0;
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            let total = 0;
-            incomes.forEach(inc => {
-                if (!inc || !inc.date) return;
-                const incDate = new Date(inc.date);
-                if (incDate.getMonth() !== currentMonth || incDate.getFullYear() !== currentYear) return;
-                if (incDate > today) return;
-                const amount = parseFloat(inc.amount) || 0;
-                if (inc.incomeType === 'extra' && remainingDays > 0) {
-                    total += amount / remainingDays;
-                } else {
-                    total += amount;
-                }
-            });
-            return total;
-        }
-        function calculateDailyExpenses(expenses, currentMonth, currentYear) {
-            if (!Array.isArray(expenses)) return 0;
-            return expenses.filter(exp => {
-                if (!exp || !exp.date) return false;
-                const expDate = new Date(exp.date);
-                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
-            }).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-        }
-        function calculateDailySavingsAmount(savingsGoals) {
-            if (!Array.isArray(savingsGoals)) return 0;
-            return savingsGoals.filter(goal => goal && goal.active !== false).reduce((sum, goal) => sum + (parseFloat(goal.dailyAmount) || 0), 0);
-        }
-        function calculateTotalBalance(accounts) {
-            if (!Array.isArray(accounts)) return 0;
-            return round2(accounts.reduce((sum, acc) => sum + (parseFloat(acc.balance) || 0), 0));
-        }
-        function calculateTotalSavings(savingsGoals) {
-            if (!Array.isArray(savingsGoals)) return 0;
-            return round2(savingsGoals.reduce((sum, goal) => sum + (parseFloat(goal.currentAmount) || 0), 0));
-        }
-        function calculateMonthlyStats(data) {
-            const today = new Date();
-            const currentMonth = today.getMonth();
-            const currentYear = today.getFullYear();
-            const currentDay = today.getDate();
-            const monthlyIncomes = (data.incomes || []).filter(inc => {
-                if (!inc || !inc.date) return false;
+            const dailySpendingBalance = (data.accounts||[]).filter(a=>a&&a.forDailySpending).reduce((s,a)=>s+(parseFloat(a.balance)||0),0);
+            const committedRecurring = (data.recurringExpenses||[]).filter(e=>e&&(parseInt(e.dayOfMonth)||1)>currentDay).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+            let incomesUntilToday = 0;
+            (data.incomes||[]).forEach(inc=>{
+                if(!inc||!inc.date)return;
                 const d = new Date(inc.date);
-                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-            }).reduce((sum, inc) => sum + (parseFloat(inc.amount) || 0), 0);
-            const monthlyExpenses = (data.expenses || []).filter(exp => {
-                if (!exp || !exp.date) return false;
-                const d = new Date(exp.date);
-                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-            }).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-            const paidRecurring = (data.recurringExpenses || []).filter(exp => (parseInt(exp.dayOfMonth) || 1) <= currentDay).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-            const pendingRecurring = (data.recurringExpenses || []).filter(exp => (parseInt(exp.dayOfMonth) || 1) > currentDay).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-            const totalRecurring = (data.recurringExpenses || []).reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-            const dailyAverage = currentDay > 0 ? (monthlyExpenses + paidRecurring) / currentDay : 0;
+                if(d.getMonth()!==currentMonth||d.getFullYear()!==currentYear||d>today)return;
+                const amt = parseFloat(inc.amount)||0;
+                incomesUntilToday += inc.incomeType==='extra'&&remainingDays>0 ? amt/remainingDays : amt;
+            });
+            const dailyExpensesTotal = (data.expenses||[]).filter(e=>{if(!e||!e.date)return false;const d=new Date(e.date);return d.getMonth()===currentMonth&&d.getFullYear()===currentYear;}).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+            const dailySavingsAmount = (data.savingsGoals||[]).filter(g=>g&&g.active!==false).reduce((s,g)=>s+(parseFloat(g.dailyAmount)||0),0);
+            const availableToday = dailySpendingBalance - committedRecurring + incomesUntilToday - dailyExpensesTotal - dailySavingsAmount;
             return {
-                monthlyIncomes: round2(monthlyIncomes),
-                monthlyExpenses: round2(monthlyExpenses),
-                paidRecurring: round2(paidRecurring),
-                pendingRecurring: round2(pendingRecurring),
-                totalRecurring: round2(totalRecurring),
-                totalMonthlyExpenses: round2(monthlyExpenses + paidRecurring),
-                dailyAverage: round2(dailyAverage)
+                availableToday: r2(availableToday),
+                availableWithoutSavings: r2(availableToday + dailySavingsAmount),
+                breakdown: { dailySpendingBalance: r2(dailySpendingBalance), committedRecurring: r2(committedRecurring), incomesUntilToday: r2(incomesUntilToday), dailyExpensesTotal: r2(dailyExpensesTotal), dailySavingsAmount: r2(dailySavingsAmount) }
             };
+        }
+        function calculateTotalBalance(accounts) { return r2((accounts||[]).reduce((s,a)=>s+(parseFloat(a.balance)||0),0)); }
+        function calculateTotalSavings(goals) { return r2((goals||[]).reduce((s,g)=>s+(parseFloat(g.currentAmount)||0),0)); }
+        function calculateMonthlyStats(data) {
+            const today = new Date(), cm = today.getMonth(), cy = today.getFullYear(), cd = today.getDate();
+            const mi = (data.incomes||[]).filter(i=>{if(!i||!i.date)return false;const d=new Date(i.date);return d.getMonth()===cm&&d.getFullYear()===cy;}).reduce((s,i)=>s+(parseFloat(i.amount)||0),0);
+            const me = (data.expenses||[]).filter(e=>{if(!e||!e.date)return false;const d=new Date(e.date);return d.getMonth()===cm&&d.getFullYear()===cy;}).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+            const pr = (data.recurringExpenses||[]).filter(e=>(parseInt(e.dayOfMonth)||1)<=cd).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+            const pend = (data.recurringExpenses||[]).filter(e=>(parseInt(e.dayOfMonth)||1)>cd).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+            return { monthlyIncomes: r2(mi), monthlyExpenses: r2(me), paidRecurring: r2(pr), pendingRecurring: r2(pend), totalMonthlyExpenses: r2(me+pr), dailyAverage: r2(cd>0?(me+pr)/cd:0) };
         }
         function simulateFinances(data, months) {
             const stats = calculateMonthlyStats(data);
-            const totalBalance = calculateTotalBalance(data.accounts);
-            const dailySavings = calculateDailySavingsAmount(data.savingsGoals);
-            const totalSavingsNow = calculateTotalSavings(data.savingsGoals);
-            const monthlyIncome = stats.monthlyIncomes || 0;
-            const monthlyExpense = stats.totalMonthlyExpenses + (stats.dailyAverage * 30 - stats.totalMonthlyExpenses) || 0;
-            const monthlySavings = dailySavings * 30;
-            const monthlyNet = monthlyIncome - monthlyExpense - monthlySavings;
-            const projections = [];
-            let runningBalance = totalBalance;
-            let runningSavings = totalSavingsNow;
-            let negativeMonth = null;
-            let savingsGoalAtRisk = false;
-            for (let i = 1; i <= months; i++) {
-                runningBalance += monthlyNet;
-                runningSavings += monthlySavings;
-                projections.push({ month: i, balance: round2(runningBalance), savings: round2(runningSavings), expenses: round2(monthlyExpense * i) });
-                if (runningBalance < 0 && negativeMonth === null) negativeMonth = i;
-            }
-            (data.savingsGoals || []).forEach(goal => {
-                if (goal.targetDate) {
-                    const target = new Date(goal.targetDate);
-                    const now = new Date();
-                    const monthsToTarget = (target.getFullYear() - now.getFullYear()) * 12 + (target.getMonth() - now.getMonth());
-                    const projectedSavings = (goal.currentAmount || 0) + (goal.dailyAmount || 0) * 30 * monthsToTarget;
-                    if (projectedSavings < goal.targetAmount) savingsGoalAtRisk = true;
-                }
-            });
-            return { projections, finalBalance: round2(runningBalance), finalSavings: round2(runningSavings), totalExpenses: round2(monthlyExpense * months), negativeMonth, savingsGoalAtRisk, monthlyNet: round2(monthlyNet) };
+            const tb = calculateTotalBalance(data.accounts);
+            const ds = (data.savingsGoals||[]).filter(g=>g&&g.active!==false).reduce((s,g)=>s+(parseFloat(g.dailyAmount)||0),0);
+            const ts = calculateTotalSavings(data.savingsGoals);
+            const mi = stats.monthlyIncomes||0, mexp = stats.totalMonthlyExpenses+(stats.dailyAverage*30-stats.totalMonthlyExpenses)||0;
+            const ms = ds*30, mn = mi - mexp - ms;
+            const proj = []; let rb = tb, rsv = ts, negM = null, risk = false;
+            for(let i=1;i<=months;i++){ rb+=mn; rsv+=ms; proj.push({month:i,balance:r2(rb),savings:r2(rsv)}); if(rb<0&&negM===null)negM=i; }
+            (data.savingsGoals||[]).forEach(g=>{ if(g.targetDate){ const t=new Date(g.targetDate),n=new Date(),mt=(t.getFullYear()-n.getFullYear())*12+(t.getMonth()-n.getMonth()); if((g.currentAmount||0)+(g.dailyAmount||0)*30*mt<g.targetAmount)risk=true; }});
+            return { projections: proj, finalBalance: r2(rb), finalSavings: r2(rsv), totalExpenses: r2(mexp*months), negativeMonth: negM, savingsGoalAtRisk: risk, monthlyNet: r2(mn) };
         }
         function detectPatterns(data) {
-            const patterns = [];
-            const expenses = data.expenses || [];
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            const thisMonthExpenses = expenses.filter(e => {
-                const d = new Date(e.date);
-                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-            });
-            const smallExpenses = thisMonthExpenses.filter(e => parseFloat(e.amount) <= 5 && ['cafe', 'ocio', 'alimentacion'].includes(e.category));
-            if (smallExpenses.length >= 5) {
-                const total = smallExpenses.reduce((s, e) => s + parseFloat(e.amount), 0);
-                patterns.push({ type: 'ant', icon: '🐜', title: 'Gastos Formiga Detectados', description: `Tes ${smallExpenses.length} gastos pequenos (≤5€) este mes que suman`, amount: total, suggestion: 'Considera reducir gastos pequenos innecesarios' });
-            }
-            const byCategory = {};
-            thisMonthExpenses.forEach(e => { byCategory[e.category] = (byCategory[e.category] || 0) + parseFloat(e.amount); });
-            const topCategory = Object.entries(byCategory).sort((a, b) => b[1] - a[1])[0];
-            if (topCategory && topCategory[1] > 0) {
-                const categoryNames = { alimentacion: 'Alimentación', transporte: 'Transporte', ocio: 'Ocio', saude: 'Saúde', roupa: 'Roupa', cafe: 'Café/Snacks', subscricions: 'Subscricións', outros: 'Outros' };
-                patterns.push({ type: 'top', icon: '📊', title: 'Categoría Principal de Gasto', description: `${categoryNames[topCategory[0]] || topCategory[0]} é onde máis gastas:`, amount: topCategory[1], suggestion: 'Revisa se podes optimizar nesta área' });
-            }
-            if (thisMonthExpenses.length > 0) {
-                const avgPerDay = thisMonthExpenses.length / now.getDate();
-                if (avgPerDay > 3) {
-                    patterns.push({ type: 'frequency', icon: '⚡', title: 'Alta Frecuencia de Gastos', description: `Rexistras unha media de ${avgPerDay.toFixed(1)} gastos ao día`, amount: null, suggestion: 'Intenta planificar as compras' });
-                }
-            }
-            const totalRecurring = (data.recurringExpenses || []).reduce((s, r) => s + parseFloat(r.amount), 0);
-            const stats = calculateMonthlyStats(data);
-            if (stats.monthlyIncomes > 0 && totalRecurring / stats.monthlyIncomes > 0.4) {
-                patterns.push({ type: 'recurring', icon: '🔄', title: 'Gastos Fixos Elevados', description: `Os teus gastos recorrentes representan o ${((totalRecurring / stats.monthlyIncomes) * 100).toFixed(0)}% dos ingresos:`, amount: totalRecurring, suggestion: 'Revisa subscricións que poidas cancelar' });
-            }
+            const patterns = [], now = new Date(), cm = now.getMonth(), cy = now.getFullYear();
+            const tme = (data.expenses||[]).filter(e=>{const d=new Date(e.date);return d.getMonth()===cm&&d.getFullYear()===cy;});
+            const small = tme.filter(e=>parseFloat(e.amount)<=5&&['cafe','ocio','alimentacion'].includes(e.category));
+            if(small.length>=5){ patterns.push({icon:'🐜',title:'Gastos Formiga',description:`${small.length} gastos pequenos (≤5€):`,amount:small.reduce((s,e)=>s+parseFloat(e.amount),0),suggestion:'Reduce gastos pequenos'}); }
+            const bc = {}; tme.forEach(e=>{bc[e.category]=(bc[e.category]||0)+parseFloat(e.amount);});
+            const tc = Object.entries(bc).sort((a,b)=>b[1]-a[1])[0];
+            if(tc&&tc[1]>0){ const cn={alimentacion:'Alimentación',transporte:'Transporte',ocio:'Ocio',saude:'Saúde',roupa:'Roupa',cafe:'Café',subscricions:'Subscricións',outros:'Outros'}; patterns.push({icon:'📊',title:'Categoría Principal',description:`${cn[tc[0]]||tc[0]}:`,amount:tc[1],suggestion:'Revisa esta área'}); }
             return patterns;
         }
-        function recalculateSavingsGoals(savingsGoals) {
-            const today = new Date();
-            const updates = [];
-            savingsGoals.forEach(goal => {
-                if (!goal.targetDate || !goal.targetAmount) return;
-                const target = new Date(goal.targetDate);
-                const daysRemaining = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
-                if (daysRemaining <= 0) return;
-                const remaining = goal.targetAmount - (goal.currentAmount || 0);
-                const requiredDaily = remaining / daysRemaining;
-                if (requiredDaily > (goal.dailyAmount || 0) * 1.1) {
-                    updates.push({ id: goal.id, name: goal.name, currentDaily: goal.dailyAmount, requiredDaily: round2(requiredDaily), daysRemaining });
-                }
-            });
+        function recalculateSavingsGoals(goals) {
+            const today = new Date(), updates = [];
+            (goals||[]).forEach(g=>{ if(!g.targetDate||!g.targetAmount)return; const t=new Date(g.targetDate),dr=Math.ceil((t-today)/(1000*60*60*24)); if(dr<=0)return; const rem=g.targetAmount-(g.currentAmount||0),req=rem/dr; if(req>(g.dailyAmount||0)*1.1)updates.push({id:g.id,name:g.name,currentDaily:g.dailyAmount,requiredDaily:r2(req)}); });
             return updates;
         }
-        function round2(num) {
-            if (typeof num !== 'number' || isNaN(num)) return 0;
-            return Math.round(num * 100) / 100;
-        }
-        return { calculateAvailableToday, calculateTotalBalance, calculateTotalSavings, calculateMonthlyStats, calculateDailySavingsAmount, simulateFinances, detectPatterns, recalculateSavingsGoals, round2 };
+        function r2(n){ return typeof n!=='number'||isNaN(n)?0:Math.round(n*100)/100; }
+        return { calculateAvailableToday, calculateTotalBalance, calculateTotalSavings, calculateMonthlyStats, simulateFinances, detectPatterns, recalculateSavingsGoals, r2 };
     })();
-    // SISTEMA DE TESTS
+    // TESTS
     const TestSystem = (function() {
-        'use strict';
-        const tests = [];
+        const tests = [
+            ['Fórmula válida', d=>{ const r=FinancialEngine.calculateAvailableToday(d); return typeof r.availableToday==='number'&&!isNaN(r.availableToday); }],
+            ['Breakdown coherente', d=>{ const r=FinancialEngine.calculateAvailableToday(d),b=r.breakdown; return Math.abs(b.dailySpendingBalance-b.committedRecurring+b.incomesUntilToday-b.dailyExpensesTotal-b.dailySavingsAmount-r.availableToday)<0.01; }]
+        ];
         let lastResults = null;
-        function addTest(name, testFn) { tests.push({ name, testFn }); }
         function runAllTests(data) {
-            const results = [];
-            let allPassed = true;
-            for (const test of tests) {
-                try {
-                    const passed = test.testFn(data);
-                    results.push({ name: test.name, passed, error: null });
-                    if (!passed) allPassed = false;
-                } catch (e) {
-                    results.push({ name: test.name, passed: false, error: e.message });
-                    allPassed = false;
-                }
-            }
-            lastResults = { allPassed, results, timestamp: new Date() };
+            const results = tests.map(([name,fn])=>{ try{ return {name,passed:fn(data)}; }catch(e){ return {name,passed:false}; }});
+            lastResults = { allPassed: results.every(r=>r.passed), results };
             return lastResults;
         }
-        addTest('Fórmula válida', (data) => {
-            const result = FinancialEngine.calculateAvailableToday(data);
-            return typeof result.availableToday === 'number' && !isNaN(result.availableToday);
-        });
-        addTest('Aforro non gastable', (data) => {
-            const withSavings = FinancialEngine.calculateAvailableToday(data);
-            const dailySavings = FinancialEngine.calculateDailySavingsAmount(data.savingsGoals);
-            if (dailySavings > 0) {
-                const dataNoSavings = { ...data, savingsGoals: [] };
-                const withoutSavings = FinancialEngine.calculateAvailableToday(dataNoSavings);
-                return withSavings.availableToday < withoutSavings.availableToday;
-            }
-            return true;
-        });
-        addTest('Breakdown coherente', (data) => {
-            const result = FinancialEngine.calculateAvailableToday(data);
-            const b = result.breakdown;
-            const calculated = b.dailySpendingBalance - b.committedRecurring + b.incomesUntilToday - b.dailyExpensesTotal - b.dailySavingsAmount;
-            return Math.abs(calculated - result.availableToday) < 0.01;
-        });
-        addTest('Simulador funciona', (data) => {
-            const sim = FinancialEngine.simulateFinances(data, 3);
-            return Array.isArray(sim.projections) && sim.projections.length === 3;
-        });
-        return { runAllTests, getLastResults: () => lastResults };
+        return { runAllTests, getLastResults: ()=>lastResults };
     })();
-    // INDEXEDDB
+    // DATABASE
     const Database = (function() {
-        'use strict';
-        const DB_NAME = 'dinheiroDB';
-        const DB_VERSION = 2;
+        const DB_NAME='dinheiroDB', DB_VERSION=2;
         let db = null;
-        const STORES = ['accounts', 'incomes', 'expenses', 'recurringExpenses', 'savingsGoals', 'debts', 'dailySnapshots', 'monthlyReports', 'notifications', 'transfers'];
+        const STORES = ['accounts','incomes','expenses','recurringExpenses','savingsGoals','debts','transfers','notifications'];
         function open() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => { db = request.result; resolve(db); };
-                request.onupgradeneeded = (event) => {
-                    const database = event.target.result;
-                    STORES.forEach(storeName => {
-                        if (!database.objectStoreNames.contains(storeName)) {
-                            database.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
-                        }
-                    });
-                };
+            return new Promise((resolve,reject)=>{
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onerror = ()=>reject(req.error);
+                req.onsuccess = ()=>{ db=req.result; resolve(db); };
+                req.onupgradeneeded = e=>{ const d=e.target.result; STORES.forEach(s=>{ if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id',autoIncrement:true}); }); };
             });
         }
-        function getStore(storeName, mode = 'readonly') { return db.transaction(storeName, mode).objectStore(storeName); }
-        function getAll(storeName) {
-            return new Promise((resolve, reject) => {
-                const request = getStore(storeName).getAll();
-                request.onsuccess = () => resolve(request.result || []);
-                request.onerror = () => reject(request.error);
-            });
-        }
-        function add(storeName, data) {
-            return new Promise((resolve, reject) => {
-                const request = getStore(storeName, 'readwrite').add({ ...data, createdAt: new Date().toISOString() });
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-        function update(storeName, data) {
-            return new Promise((resolve, reject) => {
-                const request = getStore(storeName, 'readwrite').put({ ...data, updatedAt: new Date().toISOString() });
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-        function remove(storeName, id) {
-            return new Promise((resolve, reject) => {
-                const request = getStore(storeName, 'readwrite').delete(id);
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-        function clear(storeName) {
-            return new Promise((resolve, reject) => {
-                const request = getStore(storeName, 'readwrite').clear();
-                request.onsuccess = () => resolve();
-                request.onerror = () => reject(request.error);
-            });
-        }
-        async function clearAll() { for (const store of STORES) await clear(store); }
-        async function getAllData() {
-            const data = {};
-            for (const store of STORES) data[store] = await getAll(store);
-            return data;
-        }
+        function getAll(store) { return new Promise((res,rej)=>{ const r=db.transaction(store).objectStore(store).getAll(); r.onsuccess=()=>res(r.result||[]); r.onerror=()=>rej(r.error); }); }
+        function add(store,data) { return new Promise((res,rej)=>{ const r=db.transaction(store,'readwrite').objectStore(store).add({...data,createdAt:new Date().toISOString()}); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+        function update(store,data) { return new Promise((res,rej)=>{ const r=db.transaction(store,'readwrite').objectStore(store).put({...data,updatedAt:new Date().toISOString()}); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+        function remove(store,id) { return new Promise((res,rej)=>{ const r=db.transaction(store,'readwrite').objectStore(store).delete(id); r.onsuccess=()=>res(); r.onerror=()=>rej(r.error); }); }
+        function clear(store) { return new Promise((res,rej)=>{ const r=db.transaction(store,'readwrite').objectStore(store).clear(); r.onsuccess=()=>res(); r.onerror=()=>rej(r.error); }); }
+        async function clearAll() { for(const s of STORES) await clear(s); }
+        async function getAllData() { const d={}; for(const s of STORES) d[s]=await getAll(s); return d; }
         return { open, getAll, add, update, remove, clear, clearAll, getAllData, STORES };
     })();
-    // ESTADO
-    let AppState = { accounts: [], incomes: [], expenses: [], recurringExpenses: [], savingsGoals: [], debts: [], dailySnapshots: [], monthlyReports: [], notifications: [], transfers: [], lastCalculation: null, lastDay: null };
+    // STATE
+    let AppState = { accounts:[],incomes:[],expenses:[],recurringExpenses:[],savingsGoals:[],debts:[],transfers:[],notifications:[],lastCalculation:null };
     let charts = {};
-    // NOTIFICACIÓNS
-    function addNotification(type, title, text, icon = '📢') {
-        const notif = { id: Date.now(), type, title, text, icon, time: new Date().toISOString(), read: false };
-        AppState.notifications.unshift(notif);
-        if (AppState.notifications.length > 50) AppState.notifications = AppState.notifications.slice(0, 50);
-        updateNotificationUI();
-        return notif;
-    }
-    function updateNotificationUI() {
-        const badge = document.getElementById('notifBadge');
-        const list = document.getElementById('notificationList');
-        const unread = AppState.notifications.filter(n => !n.read).length;
-        badge.textContent = unread;
-        badge.classList.toggle('hidden', unread === 0);
-        if (AppState.notifications.length === 0) {
-            list.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>Sen notificacións</p></div>';
-            return;
-        }
-        list.innerHTML = AppState.notifications.slice(0, 20).map(n => `
-            <div class="notification-item ${n.read ? '' : 'unread'}" onclick="markNotificationRead(${n.id})">
-                <div class="notification-item-title"><span class="notif-icon notif-${n.type}">${n.icon}</span>${n.title}</div>
-                <div class="notification-item-text">${n.text}</div>
-                <div class="notification-item-time">${formatTimeAgo(n.time)}</div>
-            </div>
-        `).join('');
-    }
-    function markNotificationRead(id) {
-        const notif = AppState.notifications.find(n => n.id === id);
-        if (notif) notif.read = true;
-        updateNotificationUI();
-    }
-    function clearAllNotifications() { AppState.notifications = []; updateNotificationUI(); }
-    function toggleNotificationPanel() { document.getElementById('notificationPanel').classList.toggle('active'); }
-    function formatTimeAgo(dateStr) {
-        const diff = Math.floor((new Date() - new Date(dateStr)) / 1000);
-        if (diff < 60) return 'Agora mesmo';
-        if (diff < 3600) return `Hai ${Math.floor(diff / 60)} min`;
-        if (diff < 86400) return `Hai ${Math.floor(diff / 3600)} h`;
-        return `Hai ${Math.floor(diff / 86400)} días`;
-    }
     // UI HELPERS
-    function formatCurrency(amount) {
-        return (parseFloat(amount) || 0).toLocaleString('gl-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    const $ = id => document.getElementById(id);
+    const fc = n => (parseFloat(n)||0).toLocaleString('gl-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+    const fd = d => new Date(d).toLocaleDateString('gl-ES',{day:'2-digit',month:'2-digit',year:'numeric'});
+    function toast(msg, type='success') {
+        const t = document.createElement('div');
+        t.className = `toast ${type}`;
+        t.innerHTML = `<div class="toast-message">${msg}</div>`;
+        $('toastContainer').appendChild(t);
+        setTimeout(()=>t.remove(), 3500);
     }
-    function formatDate(dateStr) {
-        return new Date(dateStr).toLocaleDateString('gl-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    }
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `<div class="toast-message">${message}</div>`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    }
-    function showAlert(message) {
-        document.getElementById('alertMessage').textContent = message;
-        document.getElementById('alertBox').classList.add('visible');
-    }
-    function hideAlert() { document.getElementById('alertBox').classList.remove('visible'); }
-    function openModal(modalId) {
-        document.getElementById(modalId).classList.add('active');
+    function openModal(id) {
+        $(id).classList.add('active');
         updateAccountSelects();
-        document.querySelectorAll(`#${modalId} input[type="date"]`).forEach(input => {
-            if (!input.value) input.value = new Date().toISOString().split('T')[0];
-        });
+        document.querySelectorAll(`#${id} input[type="date"]`).forEach(i=>{ if(!i.value) i.value = new Date().toISOString().split('T')[0]; });
     }
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
-        document.getElementById(modalId).querySelector('form')?.reset();
-        document.querySelectorAll('.debt-direction-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.direction === 'owe'));
+    function closeModal(id) {
+        $(id).classList.remove('active');
+        $(id).querySelector('form')?.reset();
+        document.querySelectorAll('.debt-direction-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+        $('debtForm').direction.value = 'owe';
     }
-    function toggleCheckbox(container) { container.querySelector('.checkbox-custom').classList.toggle('checked'); }
-    function setDebtDirection(btn) {
-        document.querySelectorAll('.debt-direction-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelector('input[name="direction"]').value = btn.dataset.direction;
-    }
-    function switchSection(sectionId) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(`section-${sectionId}`).classList.add('active');
-        document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-        if (sectionId === 'simulator') updateSimulator();
-        if (sectionId === 'analysis') updateAnalysis();
+    function switchSection(name) {
+        document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+        $(`section-${name}`).classList.add('active');
+        document.querySelector(`[data-section="${name}"]`).classList.add('active');
+        if(name==='simulator') updateSimulator();
+        if(name==='analysis') updateAnalysis();
     }
     function updateAccountSelects() {
-        document.querySelectorAll('select[name="accountId"], select[name="fromAccount"], select[name="toAccount"]').forEach(select => {
-            const currentValue = select.value;
-            const placeholder = select.name === 'fromAccount' ? 'Selecciona conta orixe' : select.name === 'toAccount' ? 'Selecciona conta destino' : 'Selecciona';
-            select.innerHTML = `<option value="">${placeholder}</option>` + AppState.accounts.map(acc => `<option value="${acc.id}">${acc.name} (${formatCurrency(acc.balance)})</option>`).join('');
-            select.value = currentValue;
+        document.querySelectorAll('select[name="accountId"],select[name="fromAccount"],select[name="toAccount"]').forEach(sel=>{
+            const cv = sel.value;
+            sel.innerHTML = '<option value="">Selecciona</option>' + AppState.accounts.map(a=>`<option value="${a.id}">${a.name} (${fc(a.balance)})</option>`).join('');
+            sel.value = cv;
         });
     }
     // UI UPDATES
     function updateMainDisplay() {
-        const result = FinancialEngine.calculateAvailableToday(AppState);
-        AppState.lastCalculation = result;
-        const amountEl = document.getElementById('availableAmount');
-        amountEl.textContent = formatCurrency(result.availableToday);
-        amountEl.className = 'available-amount';
-        if (result.availableToday < 0) amountEl.classList.add('negative');
-        else if (result.availableToday > 50) amountEl.classList.add('positive');
-        document.getElementById('availableWithoutSavings').textContent = formatCurrency(result.availableWithoutSavings);
-        document.getElementById('totalBalance').textContent = formatCurrency(FinancialEngine.calculateTotalBalance(AppState.accounts));
-        document.getElementById('totalSavings').textContent = formatCurrency(FinancialEngine.calculateTotalSavings(AppState.savingsGoals));
-        document.getElementById('committedAmount').textContent = formatCurrency(result.breakdown.committedRecurring);
-        document.getElementById('currentDay').textContent = new Date().getDate();
-        const stats = FinancialEngine.calculateMonthlyStats(AppState);
-        document.getElementById('statIncomeMonth').textContent = formatCurrency(stats.monthlyIncomes);
-        document.getElementById('statExpenseMonth').textContent = formatCurrency(stats.totalMonthlyExpenses);
-        document.getElementById('statRecurring').textContent = formatCurrency(stats.pendingRecurring);
-        document.getElementById('statDailyAvg').textContent = formatCurrency(stats.dailyAverage);
+        const r = FinancialEngine.calculateAvailableToday(AppState);
+        AppState.lastCalculation = r;
+        const el = $('availableAmount');
+        el.textContent = fc(r.availableToday);
+        el.className = 'available-amount' + (r.availableToday<0?' negative':r.availableToday>50?' positive':'');
+        $('availableWithoutSavings').textContent = fc(r.availableWithoutSavings);
+        $('totalBalance').textContent = fc(FinancialEngine.calculateTotalBalance(AppState.accounts));
+        $('totalSavings').textContent = fc(FinancialEngine.calculateTotalSavings(AppState.savingsGoals));
+        $('committedAmount').textContent = fc(r.breakdown.committedRecurring);
+        $('currentDay').textContent = new Date().getDate();
+        const s = FinancialEngine.calculateMonthlyStats(AppState);
+        $('statIncomeMonth').textContent = fc(s.monthlyIncomes);
+        $('statExpenseMonth').textContent = fc(s.totalMonthlyExpenses);
+        $('statRecurring').textContent = fc(s.pendingRecurring);
+        $('statDailyAvg').textContent = fc(s.dailyAverage);
     }
     function updateAccountsList() {
-        const container = document.getElementById('accountsList');
-        if (AppState.accounts.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏦</div><p>Engade a túa primeira conta</p></div>'; return; }
-        container.innerHTML = AppState.accounts.map(acc => `
-            <div class="list-item">
-                <div class="list-item-info">
-                    <div class="list-item-name">${acc.name}<span class="tag tag-${acc.accountType || 'bank'}">${acc.accountType === 'cash' ? '💵 Efectivo' : '🏦 Banco'}</span></div>
-                    <div class="list-item-details">${acc.forDailySpending ? '✓ Para gasto diario' : '○ Non para gasto diario'}</div>
-                </div>
-                <div class="list-item-amount ${parseFloat(acc.balance) >= 0 ? 'income' : 'expense'}">${formatCurrency(acc.balance)}</div>
-                <div class="list-item-actions"><button class="btn btn-danger btn-icon" onclick="deleteAccount(${acc.id})">✕</button></div>
-            </div>
-        `).join('');
+        const c = $('accountsList');
+        if(!AppState.accounts.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🏦</div><p>Engade a túa primeira conta</p></div>'; return; }
+        c.innerHTML = AppState.accounts.map(a=>`<div class="list-item"><div class="list-item-info"><div class="list-item-name">${a.name}<span class="tag tag-${a.accountType||'bank'}">${a.accountType==='cash'?'💵':'🏦'}</span></div><div class="list-item-details">${a.forDailySpending?'✓ Gasto diario':'○ Reserva'}</div></div><div class="list-item-amount ${parseFloat(a.balance)>=0?'income':'expense'}">${fc(a.balance)}</div><div class="list-item-actions"><button class="btn btn-danger btn-icon" data-delete="account" data-id="${a.id}">✕</button></div></div>`).join('');
     }
     function updateIncomesList() {
-        const container = document.getElementById('incomesList');
-        const now = new Date();
-        const thisMonth = AppState.incomes.filter(inc => { const d = new Date(inc.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (thisMonth.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>Rexistra os teus ingresos</p></div>'; return; }
-        container.innerHTML = thisMonth.map(inc => `
-            <div class="list-item" style="border-left-color: var(--accent-green)">
-                <div class="list-item-info">
-                    <div class="list-item-name">${inc.description}${inc.incomeType === 'extra' ? '<span class="tag tag-extra">Extra</span>' : ''}</div>
-                    <div class="list-item-details">${formatDate(inc.date)}</div>
-                </div>
-                <div class="list-item-amount income">+${formatCurrency(inc.amount)}</div>
-                <div class="list-item-actions"><button class="btn btn-danger btn-icon" onclick="deleteIncome(${inc.id})">✕</button></div>
-            </div>
-        `).join('');
+        const c = $('incomesList'), now = new Date();
+        const items = AppState.incomes.filter(i=>{const d=new Date(i.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).sort((a,b)=>new Date(b.date)-new Date(a.date));
+        if(!items.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">💰</div><p>Rexistra ingresos</p></div>'; return; }
+        c.innerHTML = items.map(i=>`<div class="list-item" style="border-left-color:var(--accent-green)"><div class="list-item-info"><div class="list-item-name">${i.description}${i.incomeType==='extra'?'<span class="tag tag-extra">Extra</span>':''}</div><div class="list-item-details">${fd(i.date)}</div></div><div class="list-item-amount income">+${fc(i.amount)}</div><div class="list-item-actions"><button class="btn btn-danger btn-icon" data-delete="income" data-id="${i.id}">✕</button></div></div>`).join('');
     }
     function updateExpensesList() {
-        const container = document.getElementById('expensesList');
-        const now = new Date();
-        const thisMonth = AppState.expenses.filter(exp => { const d = new Date(exp.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (thisMonth.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛒</div><p>Rexistra os teus gastos</p></div>'; return; }
-        const categories = { alimentacion: '🍎 Alimentación', transporte: '🚗 Transporte', ocio: '🎮 Ocio', saude: '💊 Saúde', roupa: '👕 Roupa', cafe: '☕ Café/Snacks', subscricions: '📱 Subscricións', outros: '📦 Outros' };
-        container.innerHTML = thisMonth.map(exp => `
-            <div class="list-item">
-                <div class="list-item-info">
-                    <div class="list-item-name">${exp.description}</div>
-                    <div class="list-item-details">${formatDate(exp.date)} · ${categories[exp.category] || 'Outros'}</div>
-                </div>
-                <div class="list-item-amount expense">-${formatCurrency(exp.amount)}</div>
-                <div class="list-item-actions"><button class="btn btn-danger btn-icon" onclick="deleteExpense(${exp.id})">✕</button></div>
-            </div>
-        `).join('');
+        const c = $('expensesList'), now = new Date();
+        const cats = {alimentacion:'🍎',transporte:'🚗',ocio:'🎮',saude:'💊',roupa:'👕',cafe:'☕',subscricions:'📱',outros:'📦'};
+        const items = AppState.expenses.filter(e=>{const d=new Date(e.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).sort((a,b)=>new Date(b.date)-new Date(a.date));
+        if(!items.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🛒</div><p>Rexistra gastos</p></div>'; return; }
+        c.innerHTML = items.map(e=>`<div class="list-item"><div class="list-item-info"><div class="list-item-name">${e.description}</div><div class="list-item-details">${fd(e.date)} · ${cats[e.category]||'📦'}</div></div><div class="list-item-amount expense">-${fc(e.amount)}</div><div class="list-item-actions"><button class="btn btn-danger btn-icon" data-delete="expense" data-id="${e.id}">✕</button></div></div>`).join('');
     }
     function updateRecurringList() {
-        const container = document.getElementById('recurringList');
-        if (AppState.recurringExpenses.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔄</div><p>Configura os teus gastos fixos</p></div>'; return; }
-        const today = new Date().getDate();
-        const categories = { vivienda: '🏠 Vivenda', servicios: '💡 Servizos', seguros: '🛡️ Seguros', subscricions: '📱 Subscricións', outros: '📦 Outros' };
-        container.innerHTML = AppState.recurringExpenses.sort((a, b) => a.dayOfMonth - b.dayOfMonth).map(rec => {
-            const isPaid = rec.dayOfMonth <= today;
-            return `
-                <div class="list-item" style="border-left-color: ${isPaid ? 'var(--accent-green)' : 'var(--accent-yellow)'}">
-                    <div class="list-item-info">
-                        <div class="list-item-name">${rec.description}</div>
-                        <div class="list-item-details">Día ${rec.dayOfMonth} · ${categories[rec.category] || 'Outros'} · ${isPaid ? '✓ Pagado' : '○ Pendente'}</div>
-                    </div>
-                    <div class="list-item-amount expense">-${formatCurrency(rec.amount)}</div>
-                    <div class="list-item-actions"><button class="btn btn-danger btn-icon" onclick="deleteRecurring(${rec.id})">✕</button></div>
-                </div>
-            `;
-        }).join('');
+        const c = $('recurringList'), today = new Date().getDate();
+        const cats = {vivienda:'🏠',servicios:'💡',seguros:'🛡️',subscricions:'📱',outros:'📦'};
+        if(!AppState.recurringExpenses.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🔄</div><p>Configura gastos fixos</p></div>'; return; }
+        c.innerHTML = AppState.recurringExpenses.sort((a,b)=>a.dayOfMonth-b.dayOfMonth).map(r=>{const paid=r.dayOfMonth<=today;return `<div class="list-item" style="border-left-color:${paid?'var(--accent-green)':'var(--accent-yellow)'}"><div class="list-item-info"><div class="list-item-name">${r.description}</div><div class="list-item-details">Día ${r.dayOfMonth} · ${cats[r.category]||'📦'} · ${paid?'✓ Pagado':'○ Pendente'}</div></div><div class="list-item-amount expense">-${fc(r.amount)}</div><div class="list-item-actions"><button class="btn btn-danger btn-icon" data-delete="recurring" data-id="${r.id}">✕</button></div></div>`;}).join('');
     }
     function updateSavingsList() {
-        const container = document.getElementById('savingsList');
-        const alertsContainer = document.getElementById('savingsAlerts');
-        const recalcNeeded = FinancialEngine.recalculateSavingsGoals(AppState.savingsGoals);
-        alertsContainer.innerHTML = recalcNeeded.length > 0 ? recalcNeeded.map(r => `
-            <div class="simulator-alert warning">
-                <span class="simulator-alert-icon">⚠️</span>
-                <div class="simulator-alert-text">
-                    <strong>${r.name}</strong>: Necesitas ${formatCurrency(r.requiredDaily)}/día (actual: ${formatCurrency(r.currentDaily)}).
-                    <button class="btn btn-secondary" style="margin-left: 10px; padding: 5px 10px;" onclick="autoRecalculateSavings(${r.id}, ${r.requiredDaily})">Axustar</button>
-                </div>
-            </div>
-        `).join('') : '';
-        if (AppState.savingsGoals.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎯</div><p>Define as túas metas</p></div>'; return; }
-        container.innerHTML = AppState.savingsGoals.map(goal => {
-            const progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0;
-            const daysRemaining = goal.dailyAmount > 0 ? Math.ceil((goal.targetAmount - goal.currentAmount) / goal.dailyAmount) : '∞';
-            let progressClass = progress < 30 ? 'danger' : progress < 70 ? 'warning' : 'success';
-            return `
-                <div class="list-item" style="flex-direction: column; align-items: stretch; border-left-color: var(--accent-purple)">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <div class="list-item-info">
-                            <div class="list-item-name">${goal.name}</div>
-                            <div class="list-item-details">${formatCurrency(goal.dailyAmount)}/día · ~${daysRemaining} días${goal.targetDate ? ` · Meta: ${formatDate(goal.targetDate)}` : ''}</div>
-                        </div>
-                        <div style="text-align: right; margin-right: 10px;">
-                            <div class="list-item-amount income">${formatCurrency(goal.currentAmount)}</div>
-                            <div class="list-item-details">de ${formatCurrency(goal.targetAmount)}</div>
-                        </div>
-                        <button class="btn btn-danger btn-icon" onclick="deleteSavingsGoal(${goal.id})">✕</button>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill ${progressClass}" style="width: ${Math.min(progress, 100)}%"></div></div>
-                </div>
-            `;
-        }).join('');
+        const c = $('savingsList'), ac = $('savingsAlerts');
+        const recalc = FinancialEngine.recalculateSavingsGoals(AppState.savingsGoals);
+        ac.innerHTML = recalc.length ? recalc.map(r=>`<div class="simulator-alert warning"><span class="simulator-alert-icon">⚠️</span><div class="simulator-alert-text"><strong>${r.name}</strong>: Necesitas ${fc(r.requiredDaily)}/día<button class="btn btn-secondary" style="margin-left:8px;padding:5px 8px;min-height:30px;font-size:0.7rem;" data-recalc="${r.id}" data-daily="${r.requiredDaily}">Axustar</button></div></div>`).join('') : '';
+        if(!AppState.savingsGoals.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">🎯</div><p>Define metas</p></div>'; return; }
+        c.innerHTML = AppState.savingsGoals.map(g=>{const p=g.targetAmount>0?(g.currentAmount/g.targetAmount)*100:0,dr=g.dailyAmount>0?Math.ceil((g.targetAmount-g.currentAmount)/g.dailyAmount):'∞',pc=p<30?'danger':p<70?'warning':'success';return `<div class="list-item" style="flex-direction:column;align-items:stretch;border-left-color:var(--accent-purple)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div class="list-item-info"><div class="list-item-name">${g.name}</div><div class="list-item-details">${fc(g.dailyAmount)}/día · ~${dr} días</div></div><div style="text-align:right;margin-right:8px;"><div class="list-item-amount income">${fc(g.currentAmount)}</div><div class="list-item-details">de ${fc(g.targetAmount)}</div></div><button class="btn btn-danger btn-icon" data-delete="savings" data-id="${g.id}">✕</button></div><div class="progress-bar"><div class="progress-fill ${pc}" style="width:${Math.min(p,100)}%"></div></div></div>`;}).join('');
     }
     function updateDebtsList() {
-        const container = document.getElementById('debtsList');
-        if (AppState.debts.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💳</div><p>Rexistra débedas</p></div>'; return; }
-        const iOwe = AppState.debts.filter(d => d.direction === 'owe');
-        const owedToMe = AppState.debts.filter(d => d.direction === 'owed');
-        let html = '';
-        if (iOwe.length > 0) {
-            html += '<h4 style="color: var(--accent-pink); margin: 15px 0 10px; font-size: 0.9rem;">📤 DEBO A:</h4>';
-            html += iOwe.map(debt => {
-                const progress = debt.amount > 0 ? ((debt.paidAmount || 0) / debt.amount) * 100 : 0;
-                const remaining = debt.amount - (debt.paidAmount || 0);
-                return `
-                    <div class="list-item" style="border-left-color: var(--accent-pink)">
-                        <div class="list-item-info">
-                            <div class="list-item-name">${debt.person}</div>
-                            <div class="list-item-details">${debt.concept} · ${formatDate(debt.createdAt)}</div>
-                            <div class="progress-bar" style="margin-top: 8px; height: 4px;"><div class="progress-fill" style="width: ${progress}%"></div></div>
-                        </div>
-                        <div style="text-align: right; margin-right: 10px;">
-                            <div class="list-item-amount expense">Pendente: ${formatCurrency(remaining)}</div>
-                            <div class="list-item-details">Total: ${formatCurrency(debt.amount)}</div>
-                        </div>
-                        <div class="list-item-actions">
-                            <button class="btn btn-success btn-icon" onclick="payDebt(${debt.id})" title="Pagar">💸</button>
-                            <button class="btn btn-danger btn-icon" onclick="deleteDebt(${debt.id})">✕</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        if (owedToMe.length > 0) {
-            html += '<h4 style="color: var(--accent-green); margin: 20px 0 10px; font-size: 0.9rem;">📥 DÉBENME:</h4>';
-            html += owedToMe.map(debt => {
-                const progress = debt.amount > 0 ? ((debt.paidAmount || 0) / debt.amount) * 100 : 0;
-                const remaining = debt.amount - (debt.paidAmount || 0);
-                return `
-                    <div class="list-item" style="border-left-color: var(--accent-green)">
-                        <div class="list-item-info">
-                            <div class="list-item-name">${debt.person}</div>
-                            <div class="list-item-details">${debt.concept} · ${formatDate(debt.createdAt)}</div>
-                            <div class="progress-bar" style="margin-top: 8px; height: 4px;"><div class="progress-fill success" style="width: ${progress}%"></div></div>
-                        </div>
-                        <div style="text-align: right; margin-right: 10px;">
-                            <div class="list-item-amount income">Pendente: ${formatCurrency(remaining)}</div>
-                            <div class="list-item-details">Total: ${formatCurrency(debt.amount)}</div>
-                        </div>
-                        <div class="list-item-actions">
-                            <button class="btn btn-success btn-icon" onclick="receiveDebtPayment(${debt.id})" title="Recibir">💰</button>
-                            <button class="btn btn-danger btn-icon" onclick="deleteDebt(${debt.id})">✕</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        container.innerHTML = html;
+        const c = $('debtsList');
+        if(!AppState.debts.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">💳</div><p>Rexistra débedas</p></div>'; return; }
+        const owe = AppState.debts.filter(d=>d.direction==='owe'), owed = AppState.debts.filter(d=>d.direction==='owed');
+        let h = '';
+        if(owe.length){ h+='<h4 style="color:var(--accent-pink);margin:10px 0;font-size:0.85rem;">📤 DEBO:</h4>'+owe.map(d=>{const p=d.amount>0?((d.paidAmount||0)/d.amount)*100:0,rem=d.amount-(d.paidAmount||0);return `<div class="list-item" style="border-left-color:var(--accent-pink)"><div class="list-item-info"><div class="list-item-name">${d.person}</div><div class="list-item-details">${d.concept}</div><div class="progress-bar" style="margin-top:6px;height:4px;"><div class="progress-fill" style="width:${p}%"></div></div></div><div style="text-align:right;margin-right:8px;"><div class="list-item-amount expense">${fc(rem)}</div></div><div class="list-item-actions"><button class="btn btn-success btn-icon" data-pay="${d.id}">💸</button><button class="btn btn-danger btn-icon" data-delete="debt" data-id="${d.id}">✕</button></div></div>`;}).join(''); }
+        if(owed.length){ h+='<h4 style="color:var(--accent-green);margin:15px 0 10px;font-size:0.85rem;">📥 DÉBENME:</h4>'+owed.map(d=>{const p=d.amount>0?((d.paidAmount||0)/d.amount)*100:0,rem=d.amount-(d.paidAmount||0);return `<div class="list-item" style="border-left-color:var(--accent-green)"><div class="list-item-info"><div class="list-item-name">${d.person}</div><div class="list-item-details">${d.concept}</div><div class="progress-bar" style="margin-top:6px;height:4px;"><div class="progress-fill success" style="width:${p}%"></div></div></div><div style="text-align:right;margin-right:8px;"><div class="list-item-amount income">${fc(rem)}</div></div><div class="list-item-actions"><button class="btn btn-success btn-icon" data-receive="${d.id}">💰</button><button class="btn btn-danger btn-icon" data-delete="debt" data-id="${d.id}">✕</button></div></div>`;}).join(''); }
+        c.innerHTML = h;
     }
     function updateRecentMovements() {
-        const container = document.getElementById('recentMovements');
-        const all = [
-            ...AppState.incomes.map(i => ({ ...i, type: 'income' })),
-            ...AppState.expenses.map(e => ({ ...e, type: 'expense' })),
-            ...(AppState.transfers || []).map(t => ({ ...t, type: 'transfer', description: `Transferencia: ${t.description || ''}` }))
-        ].sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)).slice(0, 8);
-        if (all.length === 0) { container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>Aínda non hai movementos</p></div>'; return; }
-        container.innerHTML = all.map(mov => `
-            <div class="list-item" style="border-left-color: ${mov.type === 'income' ? 'var(--accent-green)' : mov.type === 'transfer' ? 'var(--accent-cyan)' : 'var(--accent-pink)'}">
-                <div class="list-item-info">
-                    <div class="list-item-name">${mov.description}</div>
-                    <div class="list-item-details">${formatDate(mov.date || mov.createdAt)}</div>
-                </div>
-                <div class="list-item-amount ${mov.type === 'income' ? 'income' : mov.type === 'transfer' ? 'neutral' : 'expense'}">
-                    ${mov.type === 'income' ? '+' : mov.type === 'transfer' ? '⇄' : '-'}${formatCurrency(mov.amount)}
-                </div>
-            </div>
-        `).join('');
+        const c = $('recentMovements');
+        const all = [...AppState.incomes.map(i=>({...i,type:'income'})),...AppState.expenses.map(e=>({...e,type:'expense'})),...(AppState.transfers||[]).map(t=>({...t,type:'transfer',description:`${t.description||'Transferencia'}`}))].sort((a,b)=>new Date(b.date||b.createdAt)-new Date(a.date||a.createdAt)).slice(0,6);
+        if(!all.length){ c.innerHTML='<div class="empty-state"><div class="empty-state-icon">📊</div><p>Sen movementos</p></div>'; return; }
+        c.innerHTML = all.map(m=>`<div class="list-item" style="border-left-color:${m.type==='income'?'var(--accent-green)':m.type==='transfer'?'var(--accent-cyan)':'var(--accent-pink)'}"><div class="list-item-info"><div class="list-item-name">${m.description}</div><div class="list-item-details">${fd(m.date||m.createdAt)}</div></div><div class="list-item-amount ${m.type==='income'?'income':m.type==='transfer'?'neutral':'expense'}">${m.type==='income'?'+':m.type==='transfer'?'⇄':'-'}${fc(m.amount)}</div></div>`).join('');
     }
     function updateSystemStatus() {
-        const testResults = TestSystem.getLastResults();
-        document.getElementById('systemStatus').innerHTML = `
-            <div style="display: grid; gap: 8px;">
-                <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(10,10,26,0.6); border-radius: 8px;"><span>Base de datos</span><span style="color: var(--accent-green);">✓ Conectada</span></div>
-                <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(10,10,26,0.6); border-radius: 8px;"><span>Tests</span><span style="color: ${testResults?.allPassed ? 'var(--accent-green)' : '#ff4757'};">${testResults?.allPassed ? '✓ OK' : '✕ Erro'}</span></div>
-                <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(10,10,26,0.6); border-radius: 8px;"><span>Contas</span><span>${AppState.accounts.length}</span></div>
-                <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(10,10,26,0.6); border-radius: 8px;"><span>Movementos</span><span>${AppState.incomes.length + AppState.expenses.length}</span></div>
-            </div>
-        `;
+        const tr = TestSystem.getLastResults();
+        $('systemStatus').innerHTML = `<div style="display:grid;gap:6px;"><div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(10,10,26,0.6);border-radius:6px;font-size:0.85rem;"><span>Base de datos</span><span style="color:var(--accent-green);">✓</span></div><div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(10,10,26,0.6);border-radius:6px;font-size:0.85rem;"><span>Tests</span><span style="color:${tr?.allPassed?'var(--accent-green)':'#ff4757'};">${tr?.allPassed?'✓':'✕'}</span></div><div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(10,10,26,0.6);border-radius:6px;font-size:0.85rem;"><span>Contas</span><span>${AppState.accounts.length}</span></div></div>`;
+    }
+    function updateNotificationUI() {
+        const badge = $('notifBadge'), list = $('notificationList');
+        const unread = AppState.notifications.filter(n=>!n.read).length;
+        badge.textContent = unread; badge.classList.toggle('hidden', unread===0);
+        if(!AppState.notifications.length){ list.innerHTML='<div class="empty-state" style="padding:20px;"><p>Sen notificacións</p></div>'; return; }
+        list.innerHTML = AppState.notifications.slice(0,15).map(n=>`<div class="notification-item ${n.read?'':'unread'}" data-notif="${n.id}"><div class="notification-item-title"><span class="notif-icon notif-${n.type}">${n.icon}</span>${n.title}</div><div class="notification-item-text">${n.text}</div></div>`).join('');
     }
     // CHARTS
     function updateDashboardChart() {
-        const ctx = document.getElementById('dashboardChart');
-        if (!ctx) return;
-        const now = new Date();
-        const currentDay = now.getDate();
-        const labels = [], incomeData = [], expenseData = [], balanceData = [];
-        let runningIncome = 0, runningExpense = 0;
-        for (let day = 1; day <= currentDay; day++) {
-            labels.push(day);
-            const dayIncomes = AppState.incomes.filter(i => { const d = new Date(i.date); return d.getDate() === day && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).reduce((s, i) => s + parseFloat(i.amount), 0);
-            const dayExpenses = AppState.expenses.filter(e => { const d = new Date(e.date); return d.getDate() === day && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).reduce((s, e) => s + parseFloat(e.amount), 0);
-            const dayRecurring = AppState.recurringExpenses.filter(r => r.dayOfMonth === day).reduce((s, r) => s + parseFloat(r.amount), 0);
-            runningIncome += dayIncomes;
-            runningExpense += dayExpenses + dayRecurring;
-            incomeData.push(runningIncome);
-            expenseData.push(runningExpense);
-            balanceData.push(runningIncome - runningExpense);
+        const ctx = $('dashboardChart'); if(!ctx) return;
+        const now = new Date(), cd = now.getDate();
+        const labels=[],incD=[],expD=[],balD=[];
+        let ri=0,re=0;
+        for(let d=1;d<=cd;d++){
+            labels.push(d);
+            const di = AppState.incomes.filter(i=>{const dt=new Date(i.date);return dt.getDate()===d&&dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear();}).reduce((s,i)=>s+parseFloat(i.amount),0);
+            const de = AppState.expenses.filter(e=>{const dt=new Date(e.date);return dt.getDate()===d&&dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear();}).reduce((s,e)=>s+parseFloat(e.amount),0);
+            const dr = AppState.recurringExpenses.filter(r=>r.dayOfMonth===d).reduce((s,r)=>s+parseFloat(r.amount),0);
+            ri+=di; re+=de+dr; incD.push(ri); expD.push(re); balD.push(ri-re);
         }
-        if (charts.dashboard) charts.dashboard.destroy();
-        charts.dashboard = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [
-                    { label: 'Ingresos', data: incomeData, borderColor: '#39ff14', backgroundColor: 'rgba(57, 255, 20, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Gastos', data: expenseData, borderColor: '#ff6ec7', backgroundColor: 'rgba(255, 110, 199, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Balance', data: balanceData, borderColor: '#00f5ff', backgroundColor: 'rgba(0, 245, 255, 0.1)', fill: false, tension: 0.4, borderDash: [5, 5] }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#a0a0c0' } } }, scales: { x: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } }, y: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } } } }
-        });
+        if(charts.dashboard) charts.dashboard.destroy();
+        charts.dashboard = new Chart(ctx, {type:'line',data:{labels,datasets:[{label:'Ingresos',data:incD,borderColor:'#39ff14',backgroundColor:'rgba(57,255,20,0.1)',fill:true,tension:0.4},{label:'Gastos',data:expD,borderColor:'#ff6ec7',backgroundColor:'rgba(255,110,199,0.1)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#a0a0c0',font:{size:10}}}},scales:{x:{ticks:{color:'#606080',font:{size:9}},grid:{color:'rgba(255,110,199,0.1)'}},y:{ticks:{color:'#606080',font:{size:9}},grid:{color:'rgba(255,110,199,0.1)'}}}}});
     }
     function updateSimulator() {
         const activeBtn = document.querySelector('.horizon-btn.active');
-        const months = parseInt(activeBtn?.dataset.months) || 3;
-        const simulation = FinancialEngine.simulateFinances(AppState, months);
-        document.getElementById('simBalance').textContent = formatCurrency(simulation.finalBalance);
-        document.getElementById('simSavings').textContent = formatCurrency(simulation.finalSavings);
-        document.getElementById('simExpenses').textContent = formatCurrency(simulation.totalExpenses);
-        let alertsHtml = '';
-        if (simulation.negativeMonth) alertsHtml += `<div class="simulator-alert danger"><span class="simulator-alert-icon">🚨</span><div class="simulator-alert-text"><strong>Alerta:</strong> Saldo negativo no mes ${simulation.negativeMonth}.</div></div>`;
-        if (simulation.savingsGoalAtRisk) alertsHtml += `<div class="simulator-alert warning"><span class="simulator-alert-icon">⚠️</span><div class="simulator-alert-text"><strong>Risco:</strong> Algunha meta de aforro podería non cumprirse.</div></div>`;
-        if (!simulation.negativeMonth && !simulation.savingsGoalAtRisk && simulation.monthlyNet >= 0) alertsHtml += `<div class="simulator-alert success"><span class="simulator-alert-icon">✅</span><div class="simulator-alert-text"><strong>Todo ben:</strong> Balance mensual neto: ${formatCurrency(simulation.monthlyNet)}</div></div>`;
-        document.getElementById('simulatorAlerts').innerHTML = alertsHtml;
-        const ctx = document.getElementById('simulatorChart');
-        if (charts.simulator) charts.simulator.destroy();
-        charts.simulator = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: simulation.projections.map(p => `Mes ${p.month}`),
-                datasets: [
-                    { label: 'Saldo Proxectado', data: simulation.projections.map(p => p.balance), borderColor: '#00f5ff', backgroundColor: 'rgba(0, 245, 255, 0.2)', fill: true, tension: 0.4 },
-                    { label: 'Aforro Acumulado', data: simulation.projections.map(p => p.savings), borderColor: '#39ff14', backgroundColor: 'rgba(57, 255, 20, 0.2)', fill: true, tension: 0.4 }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#a0a0c0' } } }, scales: { x: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } }, y: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } } } }
-        });
+        const months = parseInt(activeBtn?.dataset.months)||3;
+        const sim = FinancialEngine.simulateFinances(AppState, months);
+        $('simBalance').textContent = fc(sim.finalBalance);
+        $('simSavings').textContent = fc(sim.finalSavings);
+        let alerts = '';
+        if(sim.negativeMonth) alerts += `<div class="simulator-alert danger"><span class="simulator-alert-icon">🚨</span><div class="simulator-alert-text">Saldo negativo no mes ${sim.negativeMonth}</div></div>`;
+        if(sim.savingsGoalAtRisk) alerts += `<div class="simulator-alert warning"><span class="simulator-alert-icon">⚠️</span><div class="simulator-alert-text">Meta de aforro en risco</div></div>`;
+        if(!sim.negativeMonth&&!sim.savingsGoalAtRisk&&sim.monthlyNet>=0) alerts += `<div class="simulator-alert success"><span class="simulator-alert-icon">✅</span><div class="simulator-alert-text">Todo ben! Neto: ${fc(sim.monthlyNet)}/mes</div></div>`;
+        $('simulatorAlerts').innerHTML = alerts;
+        const ctx = $('simulatorChart'); if(charts.simulator) charts.simulator.destroy();
+        charts.simulator = new Chart(ctx, {type:'line',data:{labels:sim.projections.map(p=>`M${p.month}`),datasets:[{label:'Saldo',data:sim.projections.map(p=>p.balance),borderColor:'#00f5ff',backgroundColor:'rgba(0,245,255,0.2)',fill:true,tension:0.4},{label:'Aforro',data:sim.projections.map(p=>p.savings),borderColor:'#39ff14',backgroundColor:'rgba(57,255,20,0.2)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#a0a0c0',font:{size:10}}}},scales:{x:{ticks:{color:'#606080',font:{size:9}},grid:{color:'rgba(255,110,199,0.1)'}},y:{ticks:{color:'#606080',font:{size:9}},grid:{color:'rgba(255,110,199,0.1)'}}}}});
     }
     function updateAnalysis() {
         const patterns = FinancialEngine.detectPatterns(AppState);
-        const patternContainer = document.getElementById('patternAnalysis');
-        patternContainer.innerHTML = patterns.length === 0 ? '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>Necesítanse máis datos</p></div>' : patterns.map(p => `
-            <div class="pattern-card">
-                <div class="pattern-header"><span class="pattern-icon">${p.icon}</span><span class="pattern-title">${p.title}</span></div>
-                <p class="pattern-description">${p.description}${p.amount ? ` <span class="pattern-amount">${formatCurrency(p.amount)}</span>` : ''}</p>
-                <p style="color: var(--accent-cyan); font-size: 0.85rem; margin-top: 8px;">💡 ${p.suggestion}</p>
-            </div>
-        `).join('');
-        updateComparisonChart();
-        updateCategoryChart();
+        const pc = $('patternAnalysis');
+        pc.innerHTML = patterns.length ? patterns.map(p=>`<div class="pattern-card"><div class="pattern-header"><span class="pattern-icon">${p.icon}</span><span class="pattern-title">${p.title}</span></div><p class="pattern-description">${p.description}${p.amount?` <span class="pattern-amount">${fc(p.amount)}</span>`:''}</p><p style="color:var(--accent-cyan);font-size:0.8rem;margin-top:6px;">💡 ${p.suggestion}</p></div>`).join('') : '<div class="empty-state"><div class="empty-state-icon">🔍</div><p>Necesítanse máis datos</p></div>';
+        updateComparisonChart(); updateCategoryChart();
     }
     function updateComparisonChart() {
-        const ctx = document.getElementById('comparisonChart');
-        if (!ctx) return;
-        const now = new Date();
-        const monthNames = ['Xan', 'Feb', 'Mar', 'Abr', 'Mai', 'Xuñ', 'Xul', 'Ago', 'Set', 'Out', 'Nov', 'Dec'];
-        const months = [];
-        for (let i = 2; i >= 0; i--) {
-            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            months.push({ month: d.getMonth(), year: d.getFullYear(), label: monthNames[d.getMonth()] });
-        }
-        const incomeData = [], expenseData = [];
-        months.forEach(m => {
-            incomeData.push(AppState.incomes.filter(i => { const d = new Date(i.date); return d.getMonth() === m.month && d.getFullYear() === m.year; }).reduce((s, i) => s + parseFloat(i.amount), 0));
-            const recurring = AppState.recurringExpenses.reduce((s, r) => s + parseFloat(r.amount), 0);
-            expenseData.push(AppState.expenses.filter(e => { const d = new Date(e.date); return d.getMonth() === m.month && d.getFullYear() === m.year; }).reduce((s, e) => s + parseFloat(e.amount), 0) + recurring);
-        });
-        if (charts.comparison) charts.comparison.destroy();
-        charts.comparison = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: months.map(m => m.label),
-                datasets: [
-                    { label: 'Ingresos', data: incomeData, backgroundColor: 'rgba(57, 255, 20, 0.7)', borderColor: '#39ff14', borderWidth: 1 },
-                    { label: 'Gastos', data: expenseData, backgroundColor: 'rgba(255, 110, 199, 0.7)', borderColor: '#ff6ec7', borderWidth: 1 }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#a0a0c0' } } }, scales: { x: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } }, y: { ticks: { color: '#606080' }, grid: { color: 'rgba(255, 110, 199, 0.1)' } } } }
-        });
+        const ctx = $('comparisonChart'); if(!ctx) return;
+        const now = new Date(), mn=['Xan','Feb','Mar','Abr','Mai','Xuñ','Xul','Ago','Set','Out','Nov','Dec'];
+        const months = []; for(let i=2;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); months.push({m:d.getMonth(),y:d.getFullYear(),l:mn[d.getMonth()]}); }
+        const iD=[],eD=[];
+        months.forEach(m=>{ iD.push(AppState.incomes.filter(i=>{const d=new Date(i.date);return d.getMonth()===m.m&&d.getFullYear()===m.y;}).reduce((s,i)=>s+parseFloat(i.amount),0)); const rec=AppState.recurringExpenses.reduce((s,r)=>s+parseFloat(r.amount),0); eD.push(AppState.expenses.filter(e=>{const d=new Date(e.date);return d.getMonth()===m.m&&d.getFullYear()===m.y;}).reduce((s,e)=>s+parseFloat(e.amount),0)+rec); });
+        if(charts.comparison) charts.comparison.destroy();
+        charts.comparison = new Chart(ctx, {type:'bar',data:{labels:months.map(m=>m.l),datasets:[{label:'Ingresos',data:iD,backgroundColor:'rgba(57,255,20,0.7)'},{label:'Gastos',data:eD,backgroundColor:'rgba(255,110,199,0.7)'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#a0a0c0',font:{size:10}}}},scales:{x:{ticks:{color:'#606080'},grid:{color:'rgba(255,110,199,0.1)'}},y:{ticks:{color:'#606080'},grid:{color:'rgba(255,110,199,0.1)'}}}}});
     }
     function updateCategoryChart() {
-        const ctx = document.getElementById('categoryChart');
-        if (!ctx) return;
-        const now = new Date();
-        const categoryTotals = {};
-        const categoryColors = { alimentacion: '#ff6ec7', transporte: '#00f5ff', ocio: '#a855f7', saude: '#39ff14', roupa: '#ffd93d', cafe: '#ff9f43', subscricions: '#74b9ff', outros: '#636e72' };
-        const categoryNames = { alimentacion: 'Alimentación', transporte: 'Transporte', ocio: 'Ocio', saude: 'Saúde', roupa: 'Roupa', cafe: 'Café/Snacks', subscricions: 'Subscricións', outros: 'Outros' };
-        AppState.expenses.filter(e => { const d = new Date(e.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).forEach(e => { categoryTotals[e.category] = (categoryTotals[e.category] || 0) + parseFloat(e.amount); });
-        const labels = Object.keys(categoryTotals).map(c => categoryNames[c] || c);
-        const data = Object.values(categoryTotals);
-        const colors = Object.keys(categoryTotals).map(c => categoryColors[c] || '#636e72');
-        if (charts.category) charts.category.destroy();
-        if (data.length === 0) { ctx.parentElement.innerHTML = '<div class="empty-state"><p>Sen datos de gastos</p></div>'; return; }
-        charts.category = new Chart(ctx, {
-            type: 'doughnut',
-            data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#1a1a3a', borderWidth: 2 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#a0a0c0', padding: 15 } } } }
-        });
+        const ctx = $('categoryChart'); if(!ctx) return;
+        const now = new Date(), ct={}, cc={alimentacion:'#ff6ec7',transporte:'#00f5ff',ocio:'#a855f7',saude:'#39ff14',roupa:'#ffd93d',cafe:'#ff9f43',subscricions:'#74b9ff',outros:'#636e72'}, cn={alimentacion:'Alim.',transporte:'Trans.',ocio:'Ocio',saude:'Saúde',roupa:'Roupa',cafe:'Café',subscricions:'Subs.',outros:'Outros'};
+        AppState.expenses.filter(e=>{const d=new Date(e.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).forEach(e=>{ct[e.category]=(ct[e.category]||0)+parseFloat(e.amount);});
+        if(charts.category) charts.category.destroy();
+        if(!Object.keys(ct).length){ ctx.parentElement.innerHTML='<div class="empty-state"><p>Sen datos</p></div>'; return; }
+        charts.category = new Chart(ctx, {type:'doughnut',data:{labels:Object.keys(ct).map(c=>cn[c]||c),datasets:[{data:Object.values(ct),backgroundColor:Object.keys(ct).map(c=>cc[c]||'#636e72'),borderColor:'#1a1a3a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#a0a0c0',font:{size:9},padding:8}}}}});
     }
-    // CRUD OPERATIONS
-    async function saveAccount(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { name: form.name.value, balance: parseFloat(form.balance.value) || 0, accountType: form.accountType.value, forDailySpending: form.querySelector('.checkbox-custom').classList.contains('checked') };
+    // CRUD
+    async function saveAccount(e) {
+        e.preventDefault();
+        const f = e.target, cb = f.querySelector('.checkbox-custom');
+        const data = { name:f.name.value, balance:parseFloat(f.balance.value)||0, accountType:f.accountType.value, forDailySpending:cb.classList.contains('checked') };
         const id = await Database.add('accounts', data);
-        AppState.accounts.push({ ...data, id });
-        closeModal('accountModal');
-        updateAllUI();
-        runTests();
-        showToast('Conta gardada ✓');
+        AppState.accounts.push({...data, id});
+        closeModal('accountModal'); updateAllUI(); runTests(); toast('Conta gardada ✓');
     }
-    async function deleteAccount(id) {
-        if (!confirm('Eliminar esta conta?')) return;
-        await Database.remove('accounts', id);
-        AppState.accounts = AppState.accounts.filter(a => a.id !== id);
-        updateAllUI();
-        runTests();
-    }
-    async function saveIncome(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { description: form.description.value, amount: parseFloat(form.amount.value) || 0, date: form.date.value, incomeType: form.incomeType.value, accountId: parseInt(form.accountId.value) };
+    async function saveIncome(e) {
+        e.preventDefault();
+        const f = e.target;
+        const data = { description:f.description.value, amount:parseFloat(f.amount.value)||0, date:f.date.value, incomeType:f.incomeType.value, accountId:parseInt(f.accountId.value) };
         const id = await Database.add('incomes', data);
-        AppState.incomes.push({ ...data, id });
-        closeModal('incomeModal');
-        updateAllUI();
-        runTests();
-        showToast(data.incomeType === 'extra' ? `Ingreso extra repartido proporcionalmente 🎁` : 'Ingreso rexistrado ✓');
+        AppState.incomes.push({...data, id});
+        closeModal('incomeModal'); updateAllUI(); runTests(); toast(data.incomeType==='extra'?'Ingreso extra repartido 🎁':'Ingreso gardado ✓');
     }
-    async function deleteIncome(id) {
-        await Database.remove('incomes', id);
-        AppState.incomes = AppState.incomes.filter(i => i.id !== id);
-        updateAllUI();
-        runTests();
-    }
-    async function saveExpense(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { description: form.description.value, amount: parseFloat(form.amount.value) || 0, date: form.date.value, category: form.category.value };
+    async function saveExpense(e) {
+        e.preventDefault();
+        const f = e.target;
+        const data = { description:f.description.value, amount:parseFloat(f.amount.value)||0, date:f.date.value, category:f.category.value };
         const id = await Database.add('expenses', data);
-        AppState.expenses.push({ ...data, id });
-        closeModal('expenseModal');
-        updateAllUI();
-        runTests();
-        const result = AppState.lastCalculation;
-        if (result && data.amount > result.availableToday * 0.5) {
-            addNotification('warning', 'Gasto Alto', `"${data.description}" (${formatCurrency(data.amount)}) supera o 50% do dispoñible.`, '⚠️');
-        }
-        showToast('Gasto rexistrado ✓');
+        AppState.expenses.push({...data, id});
+        closeModal('expenseModal'); updateAllUI(); runTests();
+        if(AppState.lastCalculation && data.amount > AppState.lastCalculation.availableToday * 0.5) addNotification('warning','Gasto Alto',`"${data.description}" supera o 50%`,'⚠️');
+        toast('Gasto gardado ✓');
     }
-    async function deleteExpense(id) {
-        await Database.remove('expenses', id);
-        AppState.expenses = AppState.expenses.filter(e => e.id !== id);
-        updateAllUI();
-        runTests();
-    }
-    async function saveRecurring(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { description: form.description.value, amount: parseFloat(form.amount.value) || 0, dayOfMonth: parseInt(form.dayOfMonth.value) || 1, category: form.category.value };
+    async function saveRecurring(e) {
+        e.preventDefault();
+        const f = e.target;
+        const data = { description:f.description.value, amount:parseFloat(f.amount.value)||0, dayOfMonth:parseInt(f.dayOfMonth.value)||1, category:f.category.value };
         const id = await Database.add('recurringExpenses', data);
-        AppState.recurringExpenses.push({ ...data, id });
-        closeModal('recurringModal');
-        updateAllUI();
-        runTests();
-        showToast('Gasto recorrente gardado ✓');
-        const today = new Date().getDate();
-        if (data.dayOfMonth > today && data.dayOfMonth <= today + 3) {
-            addNotification('info', 'Pago Próximo', `"${data.description}" (${formatCurrency(data.amount)}) en ${data.dayOfMonth - today} días.`, '📅');
-        }
+        AppState.recurringExpenses.push({...data, id});
+        closeModal('recurringModal'); updateAllUI(); runTests(); toast('Gasto fixo gardado ✓');
     }
-    async function deleteRecurring(id) {
-        await Database.remove('recurringExpenses', id);
-        AppState.recurringExpenses = AppState.recurringExpenses.filter(r => r.id !== id);
-        updateAllUI();
-        runTests();
-    }
-    async function saveSavingsGoal(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { name: form.name.value, targetAmount: parseFloat(form.targetAmount.value) || 0, targetDate: form.targetDate.value || null, dailyAmount: parseFloat(form.dailyAmount.value) || 0, currentAmount: parseFloat(form.currentAmount.value) || 0, active: true };
+    async function saveSavingsGoal(e) {
+        e.preventDefault();
+        const f = e.target;
+        const data = { name:f.name.value, targetAmount:parseFloat(f.targetAmount.value)||0, targetDate:f.targetDate.value||null, dailyAmount:parseFloat(f.dailyAmount.value)||0, currentAmount:parseFloat(f.currentAmount.value)||0, active:true };
         const id = await Database.add('savingsGoals', data);
-        AppState.savingsGoals.push({ ...data, id });
-        closeModal('savingsModal');
-        updateAllUI();
-        runTests();
-        showToast('Meta de aforro creada ✓');
+        AppState.savingsGoals.push({...data, id});
+        closeModal('savingsModal'); updateAllUI(); runTests(); toast('Meta creada ✓');
     }
-    async function deleteSavingsGoal(id) {
-        if (!confirm('Eliminar esta meta?')) return;
-        await Database.remove('savingsGoals', id);
-        AppState.savingsGoals = AppState.savingsGoals.filter(s => s.id !== id);
-        updateAllUI();
-        runTests();
-    }
-    async function autoRecalculateSavings(id, newDaily) {
-        const goal = AppState.savingsGoals.find(g => g.id === id);
-        if (goal) {
-            goal.dailyAmount = newDaily;
-            await Database.update('savingsGoals', goal);
-            updateAllUI();
-            showToast(`Aforro diario axustado a ${formatCurrency(newDaily)} ✓`);
-        }
-    }
-    async function saveDebt(event) {
-        event.preventDefault();
-        const form = event.target;
-        const data = { direction: form.direction.value, person: form.person.value, concept: form.concept.value, amount: parseFloat(form.amount.value) || 0, paidAmount: parseFloat(form.paidAmount.value) || 0 };
+    async function saveDebt(e) {
+        e.preventDefault();
+        const f = e.target;
+        const data = { direction:f.direction.value, person:f.person.value, concept:f.concept.value, amount:parseFloat(f.amount.value)||0, paidAmount:parseFloat(f.paidAmount.value)||0 };
         const id = await Database.add('debts', data);
-        AppState.debts.push({ ...data, id, createdAt: new Date().toISOString() });
-        closeModal('debtModal');
-        updateAllUI();
-        showToast('Débeda rexistrada ✓');
+        AppState.debts.push({...data, id, createdAt:new Date().toISOString()});
+        closeModal('debtModal'); updateAllUI(); toast('Débeda gardada ✓');
     }
-    async function deleteDebt(id) {
-        await Database.remove('debts', id);
-        AppState.debts = AppState.debts.filter(d => d.id !== id);
-        updateAllUI();
+    async function saveTransfer(e) {
+        e.preventDefault();
+        const f = e.target, fid = parseInt(f.fromAccount.value), tid = parseInt(f.toAccount.value), amt = parseFloat(f.amount.value)||0;
+        if(fid===tid){ toast('Contas deben ser diferentes','error'); return; }
+        const fa = AppState.accounts.find(a=>a.id===fid), ta = AppState.accounts.find(a=>a.id===tid);
+        if(!fa||!ta){ toast('Selecciona contas','error'); return; }
+        fa.balance -= amt; ta.balance += amt;
+        await Database.update('accounts', fa); await Database.update('accounts', ta);
+        const tr = { fromAccountId:fid, toAccountId:tid, amount:amt, description:`${fa.name}→${ta.name}`, date:new Date().toISOString() };
+        const id = await Database.add('transfers', tr);
+        AppState.transfers.push({...tr, id});
+        closeModal('transferModal'); updateAllUI(); toast(`Transferido ${fc(amt)} ✓`);
     }
-    async function payDebt(id) {
-        const debt = AppState.debts.find(d => d.id === id);
-        if (!debt) return;
-        const remaining = debt.amount - (debt.paidAmount || 0);
-        const payAmount = prompt(`Cantidade a pagar (pendente: ${formatCurrency(remaining)}):`, remaining);
-        if (payAmount === null) return;
-        debt.paidAmount = (debt.paidAmount || 0) + (parseFloat(payAmount) || 0);
+    async function deleteItem(type, id) {
+        const stores = { account:'accounts', income:'incomes', expense:'expenses', recurring:'recurringExpenses', savings:'savingsGoals', debt:'debts' };
+        const stateKeys = { account:'accounts', income:'incomes', expense:'expenses', recurring:'recurringExpenses', savings:'savingsGoals', debt:'debts' };
+        await Database.remove(stores[type], id);
+        AppState[stateKeys[type]] = AppState[stateKeys[type]].filter(i=>i.id!==id);
+        updateAllUI(); runTests();
+    }
+    async function payDebt(id, receive=false) {
+        const debt = AppState.debts.find(d=>d.id===id); if(!debt) return;
+        const rem = debt.amount - (debt.paidAmount||0);
+        const amt = prompt(`Cantidade (pendente: ${fc(rem)}):`, rem);
+        if(amt===null) return;
+        debt.paidAmount = (debt.paidAmount||0) + (parseFloat(amt)||0);
         await Database.update('debts', debt);
         updateAllUI();
-        if (debt.paidAmount >= debt.amount) { showToast(`Débeda con ${debt.person} saldada! 🎉`); addNotification('success', 'Débeda Saldada', `Pagaches a débeda con ${debt.person}`, '✅'); }
-        else showToast(`Pagamento rexistrado ✓`);
+        if(debt.paidAmount>=debt.amount){ toast(receive?`${debt.person} saldou! 🎉`:'Débeda saldada! 🎉'); addNotification('success','Débeda Completada',receive?`${debt.person} pagou`:'Pagaches a débeda','✅'); }
+        else toast('Pagamento rexistrado ✓');
     }
-    async function receiveDebtPayment(id) {
-        const debt = AppState.debts.find(d => d.id === id);
-        if (!debt) return;
-        const remaining = debt.amount - (debt.paidAmount || 0);
-        const receiveAmount = prompt(`Cantidade recibida (pendente: ${formatCurrency(remaining)}):`, remaining);
-        if (receiveAmount === null) return;
-        debt.paidAmount = (debt.paidAmount || 0) + (parseFloat(receiveAmount) || 0);
-        await Database.update('debts', debt);
-        updateAllUI();
-        if (debt.paidAmount >= debt.amount) { showToast(`${debt.person} saldou a débeda! 🎉`); addNotification('success', 'Cobro Completado', `${debt.person} pagou todo`, '✅'); }
-        else showToast(`Recibido de ${debt.person} ✓`);
+    async function autoRecalcSavings(id, daily) {
+        const g = AppState.savingsGoals.find(x=>x.id===id); if(!g) return;
+        g.dailyAmount = daily;
+        await Database.update('savingsGoals', g);
+        updateAllUI(); toast(`Axustado a ${fc(daily)}/día ✓`);
     }
-    async function saveTransfer(event) {
-        event.preventDefault();
-        const form = event.target;
-        const fromId = parseInt(form.fromAccount.value);
-        const toId = parseInt(form.toAccount.value);
-        const amount = parseFloat(form.amount.value) || 0;
-        if (fromId === toId) { showToast('As contas deben ser diferentes', 'error'); return; }
-        const fromAcc = AppState.accounts.find(a => a.id === fromId);
-        const toAcc = AppState.accounts.find(a => a.id === toId);
-        if (!fromAcc || !toAcc) { showToast('Selecciona contas válidas', 'error'); return; }
-        fromAcc.balance -= amount;
-        toAcc.balance += amount;
-        await Database.update('accounts', fromAcc);
-        await Database.update('accounts', toAcc);
-        const transfer = { fromAccountId: fromId, toAccountId: toId, amount, description: `${fromAcc.name} → ${toAcc.name}`, date: new Date().toISOString() };
-        const id = await Database.add('transfers', transfer);
-        AppState.transfers = AppState.transfers || [];
-        AppState.transfers.push({ ...transfer, id });
-        closeModal('transferModal');
-        updateAllUI();
-        showToast(`Transferido ${formatCurrency(amount)} ✓`);
+    function addNotification(type, title, text, icon='📢') {
+        AppState.notifications.unshift({ id:Date.now(), type, title, text, icon, time:new Date().toISOString(), read:false });
+        if(AppState.notifications.length>30) AppState.notifications = AppState.notifications.slice(0,30);
+        updateNotificationUI();
     }
     // EXPORT/IMPORT
-    async function exportAllData() {
-        const data = { version: '2.0.0', exportedAt: new Date().toISOString(), accounts: AppState.accounts, incomes: AppState.incomes, expenses: AppState.expenses, recurringExpenses: AppState.recurringExpenses, savingsGoals: AppState.savingsGoals, debts: AppState.debts, transfers: AppState.transfers };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `cartinos_backup_${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        showToast('Datos exportados ✓');
+    async function exportJSON() {
+        const data = { version:'2.0.0', exportedAt:new Date().toISOString(), accounts:AppState.accounts, incomes:AppState.incomes, expenses:AppState.expenses, recurringExpenses:AppState.recurringExpenses, savingsGoals:AppState.savingsGoals, debts:AppState.debts, transfers:AppState.transfers };
+        const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `cartinos_${new Date().toISOString().split('T')[0]}.json`; a.click();
+        toast('Exportado ✓');
     }
     async function exportPDF() {
         const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const now = new Date();
-        const result = FinancialEngine.calculateAvailableToday(AppState);
-        doc.setFillColor(26, 26, 58);
-        doc.rect(0, 0, 210, 35, 'F');
-        doc.setTextColor(255, 110, 199);
-        doc.setFontSize(22);
-        doc.text('CARTIÑOS', 105, 18, { align: 'center' });
-        doc.setTextColor(160, 160, 192);
-        doc.setFontSize(10);
-        doc.text('Informe Financeiro', 105, 28, { align: 'center' });
-        doc.setTextColor(60, 60, 60);
-        doc.setFontSize(11);
-        doc.text(`Xerado: ${now.toLocaleDateString('gl-ES')}`, 20, 45);
-        doc.setFontSize(12);
-        doc.text('Diñeiro dispoñible hoxe:', 20, 60);
-        doc.setFontSize(18);
-        doc.setTextColor(result.availableToday >= 0 ? 57 : 255, result.availableToday >= 0 ? 255 : 71, result.availableToday >= 0 ? 20 : 87);
-        doc.text(formatCurrency(result.availableToday), 190, 60, { align: 'right' });
-        let y = 80;
-        doc.setFontSize(10);
-        doc.setTextColor(60, 60, 60);
-        const summaryData = [
-            ['Saldo contas', formatCurrency(result.breakdown.dailySpendingBalance)],
-            ['Recorrentes pendentes', '-' + formatCurrency(result.breakdown.committedRecurring)],
-            ['Ingresos mes', '+' + formatCurrency(result.breakdown.incomesUntilToday)],
-            ['Gastos diarios', '-' + formatCurrency(result.breakdown.dailyExpensesTotal)],
-            ['Reserva aforro', '-' + formatCurrency(result.breakdown.dailySavingsAmount)]
-        ];
-        summaryData.forEach(([label, value]) => { doc.text(label, 20, y); doc.text(value, 190, y, { align: 'right' }); y += 7; });
-        doc.save(`cartinos_${now.toISOString().split('T')[0]}.pdf`);
-        showToast('PDF exportado ✓');
+        const doc = new jsPDF(), r = FinancialEngine.calculateAvailableToday(AppState);
+        doc.setFillColor(26,26,58); doc.rect(0,0,210,30,'F');
+        doc.setTextColor(255,110,199); doc.setFontSize(18); doc.text('CARTIÑOS',105,15,{align:'center'});
+        doc.setTextColor(160,160,192); doc.setFontSize(9); doc.text('Informe Financeiro',105,23,{align:'center'});
+        doc.setTextColor(60,60,60); doc.setFontSize(10); doc.text(`Data: ${new Date().toLocaleDateString('gl-ES')}`,20,40);
+        doc.setFontSize(14); doc.text(`Dispoñible hoxe: ${fc(r.availableToday)}`,20,55);
+        doc.save(`cartinos_${new Date().toISOString().split('T')[0]}.pdf`);
+        toast('PDF exportado ✓');
     }
-    async function importData(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+    async function importData(e) {
+        const file = e.target.files[0]; if(!file) return;
         try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            if (!data.version) throw new Error('Formato non válido');
+            const data = JSON.parse(await file.text());
+            if(!data.version) throw new Error('Formato inválido');
             await Database.clearAll();
-            for (const acc of (data.accounts || [])) { delete acc.id; await Database.add('accounts', acc); }
-            for (const inc of (data.incomes || [])) { delete inc.id; await Database.add('incomes', inc); }
-            for (const exp of (data.expenses || [])) { delete exp.id; await Database.add('expenses', exp); }
-            for (const rec of (data.recurringExpenses || [])) { delete rec.id; await Database.add('recurringExpenses', rec); }
-            for (const sav of (data.savingsGoals || [])) { delete sav.id; await Database.add('savingsGoals', sav); }
-            for (const debt of (data.debts || [])) { delete debt.id; await Database.add('debts', debt); }
-            for (const tr of (data.transfers || [])) { delete tr.id; await Database.add('transfers', tr); }
-            await loadData();
-            showToast('Datos importados ✓', 'success');
-        } catch (e) { showToast('Erro: ' + e.message, 'error'); }
-        event.target.value = '';
+            for(const a of (data.accounts||[])) { delete a.id; await Database.add('accounts',a); }
+            for(const i of (data.incomes||[])) { delete i.id; await Database.add('incomes',i); }
+            for(const x of (data.expenses||[])) { delete x.id; await Database.add('expenses',x); }
+            for(const r of (data.recurringExpenses||[])) { delete r.id; await Database.add('recurringExpenses',r); }
+            for(const s of (data.savingsGoals||[])) { delete s.id; await Database.add('savingsGoals',s); }
+            for(const d of (data.debts||[])) { delete d.id; await Database.add('debts',d); }
+            for(const t of (data.transfers||[])) { delete t.id; await Database.add('transfers',t); }
+            await loadData(); toast('Importado ✓');
+        } catch(err) { toast('Erro: '+err.message,'error'); }
+        e.target.value = '';
     }
-    async function confirmResetData() {
-        if (!confirm('ATENCIÓN: Vas borrar TODOS os datos. Continuar?')) return;
-        if (!confirm('Esta acción non se pode desfacer. Confirmas?')) return;
+    async function resetData() {
+        if(!confirm('Borrar TODOS os datos?')) return;
+        if(!confirm('Confirmas?')) return;
         await Database.clearAll();
-        AppState = { accounts: [], incomes: [], expenses: [], recurringExpenses: [], savingsGoals: [], debts: [], dailySnapshots: [], monthlyReports: [], notifications: [], transfers: [], lastCalculation: null, lastDay: null };
-        updateAllUI();
-        showToast('Datos eliminados', 'warning');
+        AppState = { accounts:[],incomes:[],expenses:[],recurringExpenses:[],savingsGoals:[],debts:[],transfers:[],notifications:[],lastCalculation:null };
+        updateAllUI(); toast('Datos borrados','warning');
     }
-    // NOTIFICACIÓNS AUTOMÁTICAS
-    function checkAndGenerateNotifications() {
-        const today = new Date();
-        const currentDay = today.getDate();
-        AppState.recurringExpenses.forEach(rec => {
-            const daysUntil = rec.dayOfMonth - currentDay;
-            if (daysUntil > 0 && daysUntil <= 3) {
-                const existingNotif = AppState.notifications.find(n => n.title.includes(rec.description) && new Date(n.time).toDateString() === today.toDateString());
-                if (!existingNotif) addNotification('warning', 'Pago Próximo', `"${rec.description}" (${formatCurrency(rec.amount)}) en ${daysUntil} día${daysUntil > 1 ? 's' : ''}.`, '📅');
-            }
-        });
-        const recalcNeeded = FinancialEngine.recalculateSavingsGoals(AppState.savingsGoals);
-        recalcNeeded.forEach(r => {
-            const existingNotif = AppState.notifications.find(n => n.title.includes('Meta en Risco') && n.text.includes(r.name) && new Date(n.time).toDateString() === today.toDateString());
-            if (!existingNotif) addNotification('danger', 'Meta en Risco', `"${r.name}" require ${formatCurrency(r.requiredDaily)}/día para cumprirse.`, '🎯');
-        });
-        const sim = FinancialEngine.simulateFinances(AppState, 3);
-        if (sim.negativeMonth && sim.negativeMonth <= 2) {
-            const existingNotif = AppState.notifications.find(n => n.title.includes('Saldo Negativo') && new Date(n.time).toDateString() === today.toDateString());
-            if (!existingNotif) addNotification('danger', 'Alerta: Saldo Negativo', `Saldo negativo proxectado en ${sim.negativeMonth} mes${sim.negativeMonth > 1 ? 'es' : ''}.`, '🚨');
-        }
-    }
-    // TESTS
+    // CORE
     function runTests() {
-        const results = TestSystem.runAllTests(AppState);
-        const statusEl = document.getElementById('testStatus');
-        if (results.allPassed) { statusEl.className = 'test-status pass'; statusEl.textContent = '✓ OK'; hideAlert(); }
-        else { statusEl.className = 'test-status fail'; statusEl.textContent = '✕ Erro'; showAlert(`Tests fallidos: ${results.results.filter(r => !r.passed).map(r => r.name).join(', ')}`); }
-        return results;
-    }
-    function checkDayChange() {
-        const today = new Date().getDate();
-        if (AppState.lastDay !== null && AppState.lastDay !== today) { runTests(); updateAllUI(); checkAndGenerateNotifications(); showToast('Novo día! Datos actualizados 🌅', 'info'); }
-        AppState.lastDay = today;
+        const r = TestSystem.runAllTests(AppState);
+        const el = $('testStatus');
+        el.className = 'test-status ' + (r.allPassed?'pass':'fail');
+        el.textContent = r.allPassed?'✓':'✕';
     }
     function updateAllUI() {
-        updateMainDisplay();
-        updateAccountsList();
-        updateIncomesList();
-        updateExpensesList();
-        updateRecurringList();
-        updateSavingsList();
-        updateDebtsList();
-        updateRecentMovements();
-        updateSystemStatus();
-        updateNotificationUI();
-        updateDashboardChart();
+        updateMainDisplay(); updateAccountsList(); updateIncomesList(); updateExpensesList();
+        updateRecurringList(); updateSavingsList(); updateDebtsList(); updateRecentMovements();
+        updateSystemStatus(); updateNotificationUI(); updateDashboardChart();
     }
-    // INICIALIZACIÓN
     async function loadData() {
-        const data = await Database.getAllData();
-        AppState.accounts = data.accounts || [];
-        AppState.incomes = data.incomes || [];
-        AppState.expenses = data.expenses || [];
-        AppState.recurringExpenses = data.recurringExpenses || [];
-        AppState.savingsGoals = data.savingsGoals || [];
-        AppState.debts = data.debts || [];
-        AppState.dailySnapshots = data.dailySnapshots || [];
-        AppState.monthlyReports = data.monthlyReports || [];
-        AppState.notifications = data.notifications || [];
-        AppState.transfers = data.transfers || [];
-        AppState.lastDay = new Date().getDate();
+        const d = await Database.getAllData();
+        AppState.accounts = d.accounts||[]; AppState.incomes = d.incomes||[]; AppState.expenses = d.expenses||[];
+        AppState.recurringExpenses = d.recurringExpenses||[]; AppState.savingsGoals = d.savingsGoals||[];
+        AppState.debts = d.debts||[]; AppState.transfers = d.transfers||[]; AppState.notifications = d.notifications||[];
     }
+    // INITIALIZATION
     async function init() {
         try {
             await Database.open();
             await loadData();
             runTests();
             updateAllUI();
-            checkAndGenerateNotifications();
-            document.querySelectorAll('.nav-tab').forEach(tab => tab.addEventListener('click', () => switchSection(tab.dataset.section)));
-            document.querySelectorAll('.horizon-btn').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.horizon-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); updateSimulator(); }));
-            document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); }));
-            document.addEventListener('click', (e) => { const panel = document.getElementById('notificationPanel'); const bell = document.querySelector('.notification-bell'); if (!panel.contains(e.target) && !bell.contains(e.target)) panel.classList.remove('active'); });
-            setInterval(checkDayChange, 60000);
+
+            // Navigation tabs
+            $('navTabs').addEventListener('click', e => {
+                const tab = e.target.closest('.nav-tab');
+                if(tab) switchSection(tab.dataset.section);
+            });
+
+            // FAB buttons
+            $('fabIncome').addEventListener('click', () => openModal('incomeModal'));
+            $('fabExpense').addEventListener('click', () => openModal('expenseModal'));
+            $('fabTransfer').addEventListener('click', () => openModal('transferModal'));
+
+            // Section buttons
+            $('btnNewAccount')?.addEventListener('click', () => openModal('accountModal'));
+            $('btnNewIncome')?.addEventListener('click', () => openModal('incomeModal'));
+            $('btnNewExpense')?.addEventListener('click', () => openModal('expenseModal'));
+            $('btnNewRecurring')?.addEventListener('click', () => openModal('recurringModal'));
+            $('btnNewSavings')?.addEventListener('click', () => openModal('savingsModal'));
+            $('btnNewDebt')?.addEventListener('click', () => openModal('debtModal'));
+
+            // Settings buttons
+            $('btnExportJSON')?.addEventListener('click', exportJSON);
+            $('btnExportPDF')?.addEventListener('click', exportPDF);
+            $('btnImport')?.addEventListener('click', () => $('importFile').click());
+            $('importFile')?.addEventListener('change', importData);
+            $('btnReset')?.addEventListener('click', resetData);
+
+            // Forms
+            $('accountForm').addEventListener('submit', saveAccount);
+            $('incomeForm').addEventListener('submit', saveIncome);
+            $('expenseForm').addEventListener('submit', saveExpense);
+            $('recurringForm').addEventListener('submit', saveRecurring);
+            $('savingsForm').addEventListener('submit', saveSavingsGoal);
+            $('debtForm').addEventListener('submit', saveDebt);
+            $('transferForm').addEventListener('submit', saveTransfer);
+
+            // Checkbox toggle
+            $('checkDailySpending').addEventListener('click', function() {
+                this.querySelector('.checkbox-custom').classList.toggle('checked');
+            });
+
+            // Debt direction
+            $('debtDirection').addEventListener('click', e => {
+                const btn = e.target.closest('.debt-direction-btn');
+                if(btn) {
+                    document.querySelectorAll('.debt-direction-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    $('debtForm').direction.value = btn.dataset.direction;
+                }
+            });
+
+            // Modal close buttons
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', () => closeModal(btn.dataset.close));
+            });
+
+            // Modal overlay click to close
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', e => {
+                    if(e.target === overlay) overlay.classList.remove('active');
+                });
+            });
+
+            // Horizon buttons
+            $('horizonBtns').addEventListener('click', e => {
+                const btn = e.target.closest('.horizon-btn');
+                if(btn) {
+                    document.querySelectorAll('.horizon-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateSimulator();
+                }
+            });
+
+            // Notification bell
+            $('notifBell').addEventListener('click', () => {
+                $('notificationPanel').classList.toggle('active');
+            });
+            $('clearNotifsBtn').addEventListener('click', () => {
+                AppState.notifications = [];
+                updateNotificationUI();
+            });
+
+            // Close notification panel on outside click
+            document.addEventListener('click', e => {
+                const panel = $('notificationPanel'), bell = $('notifBell');
+                if(!panel.contains(e.target) && !bell.contains(e.target)) {
+                    panel.classList.remove('active');
+                }
+            });
+
+            // Delegated events for dynamic content
+            document.addEventListener('click', async e => {
+                // Delete buttons
+                const delBtn = e.target.closest('[data-delete]');
+                if(delBtn) {
+                    const type = delBtn.dataset.delete;
+                    const id = parseInt(delBtn.dataset.id);
+                    if(confirm('Eliminar?')) await deleteItem(type, id);
+                    return;
+                }
+
+                // Pay debt
+                const payBtn = e.target.closest('[data-pay]');
+                if(payBtn) {
+                    await payDebt(parseInt(payBtn.dataset.pay), false);
+                    return;
+                }
+
+                // Receive debt payment
+                const recvBtn = e.target.closest('[data-receive]');
+                if(recvBtn) {
+                    await payDebt(parseInt(recvBtn.dataset.receive), true);
+                    return;
+                }
+
+                // Recalculate savings
+                const recalcBtn = e.target.closest('[data-recalc]');
+                if(recalcBtn) {
+                    await autoRecalcSavings(parseInt(recalcBtn.dataset.recalc), parseFloat(recalcBtn.dataset.daily));
+                    return;
+                }
+
+                // Mark notification as read
+                const notifItem = e.target.closest('[data-notif]');
+                if(notifItem) {
+                    const n = AppState.notifications.find(x => x.id === parseInt(notifItem.dataset.notif));
+                    if(n) n.read = true;
+                    updateNotificationUI();
+                    return;
+                }
+            });
+
+            // Welcome toast
             setTimeout(() => {
-                const result = FinancialEngine.calculateAvailableToday(AppState);
-                if (result.availableToday > 0) showToast(`Hoxe podes gastar ${formatCurrency(result.availableToday)} con tranquilidade 💰`, 'info');
-                else if (result.availableToday < 0) showToast(`Atención: Estás en números vermellos (${formatCurrency(result.availableToday)}) 🚨`, 'warning');
-            }, 1500);
-        } catch (e) { console.error('Erro ao iniciar:', e); showAlert('Erro ao iniciar: ' + e.message); }
+                const r = FinancialEngine.calculateAvailableToday(AppState);
+                if(r.availableToday > 0) toast(`Hoxe podes gastar ${fc(r.availableToday)} 💰`, 'info');
+                else if(r.availableToday < 0) toast(`Atención: ${fc(r.availableToday)} 🚨`, 'warning');
+            }, 1000);
+
+        } catch(e) {
+            console.error('Init error:', e);
+            toast('Erro ao iniciar: ' + e.message, 'error');
+        }
     }
+
     document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
