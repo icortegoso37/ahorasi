@@ -2,10 +2,13 @@
 <html lang="gl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Cartiños">
     <meta name="mobile-web-app-capable" content="yes">
     <title>Cartiños - Xestión Financeira Persoal</title>
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
@@ -14,7 +17,7 @@
             --bg-primary: #0a0a1a;
             --bg-secondary: #12122a;
             --bg-tertiary: #1a1a3a;
-            --bg-card: rgba(26, 26, 58, 0.8);
+            --bg-card: rgba(26, 26, 58, 0.6);
             --accent-pink: #ff6ec7;
             --accent-cyan: #00f5ff;
             --accent-purple: #a855f7;
@@ -43,7 +46,11 @@
             min-height: 100vh;
             min-height: -webkit-fill-available;
             position: relative;
-            padding-bottom: 120px;
+            /* Ajustes para iPhone (Notch y barra inferior) */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(120px + env(safe-area-inset-bottom));
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
         body::before {
             content: '';
@@ -324,11 +331,14 @@
         .section { display: none; }
         .section.active { display: block; }
         .card {
-            background: var(--gradient-card);
+            background: var(--bg-card); /* Cambiamos a bg-card para que funcione el efecto cristal */
             border: 1px solid var(--border-glow);
             border-radius: 14px;
             padding: 18px;
             margin-bottom: 15px;
+            /* Efecto cristal para iOS */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         .card-header {
             display: flex;
@@ -845,11 +855,11 @@
                     <button class="btn btn-danger" id="btnReset">Borrar</button>
                 </div>
             </div>
-            <div class="card"><div class="card-header"><h2 class="card-title">ℹ️ Información</h2></div>
+            <div class="card">
+                <div class="card-header"><h2 class="card-title">ℹ️ Información</h2></div>
                 <p style="color: var(--text-secondary); line-height: 1.8;"><strong>Cartiños </strong><br>Xestión financeira persoal en galego.<br>Feito con  💙 dende Galicia.<br>Biquiños  😘</p>
             </div>
-        </section>
-    </div>
+
     <!-- MODALS -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal">
@@ -962,8 +972,8 @@
     // MOTOR FINANCEIRO
     const FinancialEngine = (function() {
         function calculateAvailableToday(data) {
-            const today = new Date(); today.setHours(0,0,0,0);
-            const currentDay = today.getDate(), currentMonth = today.getMonth(), currentYear = today.getFullYear();
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());            const currentDay = today.getDate(), currentMonth = today.getMonth(), currentYear = today.getFullYear();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
             const remainingDays = daysInMonth - currentDay + 1;
             const dailySpendingBalance = (data.accounts||[]).filter(a=>a&&a.forDailySpending).reduce((s,a)=>s+(parseFloat(a.balance)||0),0);
@@ -1074,6 +1084,11 @@
         t.innerHTML = `<div class="toast-message">${msg}</div>`;
         $('toastContainer').appendChild(t);
         setTimeout(()=>t.remove(), 3500);
+    }
+    function vibrate() {
+        if (navigator.vibrate) {
+            navigator.vibrate(10); // Una vibración muy corta de 10 milisegundos
+        }
     }
     function openModal(id) {
         $(id).classList.add('active');
@@ -1236,7 +1251,7 @@
         const data = { name:f.name.value, balance:parseFloat(f.balance.value)||0, accountType:f.accountType.value, forDailySpending:cb.classList.contains('checked') };
         const id = await Database.add('accounts', data);
         AppState.accounts.push({...data, id});
-        closeModal('accountModal'); updateAllUI(); runTests(); toast('Conta gardada ✓');
+        closeModal('accountModal'); updateAllUI(); runTests(); vibrate(); toast('Conta gardada ✓');
     }
     async function saveIncome(e) {
         e.preventDefault();
@@ -1244,7 +1259,7 @@
         const data = { description:f.description.value, amount:parseFloat(f.amount.value)||0, date:f.date.value, incomeType:f.incomeType.value, accountId:parseInt(f.accountId.value) };
         const id = await Database.add('incomes', data);
         AppState.incomes.push({...data, id});
-        closeModal('incomeModal'); updateAllUI(); runTests(); toast(data.incomeType==='extra'?'Ingreso extra repartido 🎁':'Ingreso gardado ✓');
+        closeModal('incomeModal'); updateAllUI(); runTests(); vibrate(); toast(data.incomeType==='extra'?'Ingreso extra repartido 🎁':'Ingreso gardado ✓');
     }
     async function saveExpense(e) {
         e.preventDefault();
@@ -1253,7 +1268,7 @@
         const id = await Database.add('expenses', data);
         AppState.expenses.push({...data, id});
         closeModal('expenseModal'); updateAllUI(); runTests();
-        if(AppState.lastCalculation && data.amount > AppState.lastCalculation.availableToday * 0.5) addNotification('warning','Gasto Alto',`"${data.description}" supera o 50%`,'⚠️');
+        if(AppState.lastCalculation && data.amount > AppState.lastCalculation.availableToday * 0.5) addNotification('warning','Gasto Alto',`"${data.description}" supera o 50%`,'⚠️'); vibrate();
         toast('Gasto gardado ✓');
     }
     async function saveRecurring(e) {
@@ -1262,7 +1277,7 @@
         const data = { description:f.description.value, amount:parseFloat(f.amount.value)||0, dayOfMonth:parseInt(f.dayOfMonth.value)||1, category:f.category.value };
         const id = await Database.add('recurringExpenses', data);
         AppState.recurringExpenses.push({...data, id});
-        closeModal('recurringModal'); updateAllUI(); runTests(); toast('Gasto fixo gardado ✓');
+        closeModal('recurringModal'); updateAllUI(); runTests(); vibrate(); toast('Gasto fixo gardado ✓');
     }
     async function saveSavingsGoal(e) {
         e.preventDefault();
@@ -1270,7 +1285,7 @@
         const data = { name:f.name.value, targetAmount:parseFloat(f.targetAmount.value)||0, targetDate:f.targetDate.value||null, dailyAmount:parseFloat(f.dailyAmount.value)||0, currentAmount:parseFloat(f.currentAmount.value)||0, active:true };
         const id = await Database.add('savingsGoals', data);
         AppState.savingsGoals.push({...data, id});
-        closeModal('savingsModal'); updateAllUI(); runTests(); toast('Meta creada ✓');
+        closeModal('savingsModal'); updateAllUI(); runTests(); vibrate(); toast('Meta creada ✓');
     }
     async function saveDebt(e) {
         e.preventDefault();
@@ -1278,20 +1293,20 @@
         const data = { direction:f.direction.value, person:f.person.value, concept:f.concept.value, amount:parseFloat(f.amount.value)||0, paidAmount:parseFloat(f.paidAmount.value)||0 };
         const id = await Database.add('debts', data);
         AppState.debts.push({...data, id, createdAt:new Date().toISOString()});
-        closeModal('debtModal'); updateAllUI(); toast('Débeda gardada ✓');
+        closeModal('debtModal'); updateAllUI(); vibrate(); toast('Débeda gardada ✓');
     }
     async function saveTransfer(e) {
         e.preventDefault();
         const f = e.target, fid = parseInt(f.fromAccount.value), tid = parseInt(f.toAccount.value), amt = parseFloat(f.amount.value)||0;
-        if(fid===tid){ toast('Contas deben ser diferentes','error'); return; }
+        if(fid===tid){ vibrate(); toast('Contas deben ser diferentes','error'); return; }
         const fa = AppState.accounts.find(a=>a.id===fid), ta = AppState.accounts.find(a=>a.id===tid);
-        if(!fa||!ta){ toast('Selecciona contas','error'); return; }
+        if(!fa||!ta){ vibrate(); toast('Selecciona contas','error'); return; }
         fa.balance -= amt; ta.balance += amt;
         await Database.update('accounts', fa); await Database.update('accounts', ta);
         const tr = { fromAccountId:fid, toAccountId:tid, amount:amt, description:`${fa.name}→${ta.name}`, date:new Date().toISOString() };
         const id = await Database.add('transfers', tr);
         AppState.transfers.push({...tr, id});
-        closeModal('transferModal'); updateAllUI(); toast(`Transferido ${fc(amt)} ✓`);
+        closeModal('transferModal'); updateAllUI(); vibrate(); toast(`Transferido ${fc(amt)} ✓`);
     }
     async function deleteItem(type, id) {
         const stores = { account:'accounts', income:'incomes', expense:'expenses', recurring:'recurringExpenses', savings:'savingsGoals', debt:'debts' };
@@ -1308,14 +1323,14 @@
         debt.paidAmount = (debt.paidAmount||0) + (parseFloat(amt)||0);
         await Database.update('debts', debt);
         updateAllUI();
-        if(debt.paidAmount>=debt.amount){ toast(receive?`${debt.person} saldou! 🎉`:'Débeda saldada! 🎉'); addNotification('success','Débeda Completada',receive?`${debt.person} pagou`:'Pagaches a débeda','✅'); }
+        if(debt.paidAmount>=debt.amount){ vibrate(); toast(receive?`${debt.person} saldou! 🎉`:'Débeda saldada! 🎉'); addNotification('success','Débeda Completada',receive?`${debt.person} pagou`:'Pagaches a débeda','✅'); }
         else toast('Pagamento rexistrado ✓');
     }
     async function autoRecalcSavings(id, daily) {
         const g = AppState.savingsGoals.find(x=>x.id===id); if(!g) return;
         g.dailyAmount = daily;
         await Database.update('savingsGoals', g);
-        updateAllUI(); toast(`Axustado a ${fc(daily)}/día ✓`);
+        updateAllUI(); vibrate(); toast(`Axustado a ${fc(daily)}/día ✓`);
     }
     function addNotification(type, title, text, icon='📢') {
         AppState.notifications.unshift({ id:Date.now(), type, title, text, icon, time:new Date().toISOString(), read:false });
@@ -1327,7 +1342,7 @@
         const data = { version:'2.0.0', exportedAt:new Date().toISOString(), accounts:AppState.accounts, incomes:AppState.incomes, expenses:AppState.expenses, recurringExpenses:AppState.recurringExpenses, savingsGoals:AppState.savingsGoals, debts:AppState.debts, transfers:AppState.transfers };
         const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `cartinos_${new Date().toISOString().split('T')[0]}.json`; a.click();
-        toast('Exportado ✓');
+        vibrate(); toast('Exportado ✓');
     }
     async function exportPDF() {
         const { jsPDF } = window.jspdf;
@@ -1338,7 +1353,7 @@
         doc.setTextColor(60,60,60); doc.setFontSize(10); doc.text(`Data: ${new Date().toLocaleDateString('gl-ES')}`,20,40);
         doc.setFontSize(14); doc.text(`Dispoñible hoxe: ${fc(r.availableToday)}`,20,55);
         doc.save(`cartinos_${new Date().toISOString().split('T')[0]}.pdf`);
-        toast('PDF exportado ✓');
+        vibrate(); toast('PDF exportado ✓');
     }
     async function importData(e) {
         const file = e.target.files[0]; if(!file) return;
@@ -1353,8 +1368,8 @@
             for(const s of (data.savingsGoals||[])) { delete s.id; await Database.add('savingsGoals',s); }
             for(const d of (data.debts||[])) { delete d.id; await Database.add('debts',d); }
             for(const t of (data.transfers||[])) { delete t.id; await Database.add('transfers',t); }
-            await loadData(); toast('Importado ✓');
-        } catch(err) { toast('Erro: '+err.message,'error'); }
+            await loadData(); vibrate(); toast('Importado ✓');
+        } catch(err) { vibrate(); toast('Erro: '+err.message,'error'); }
         e.target.value = '';
     }
     async function resetData() {
@@ -1362,7 +1377,7 @@
         if(!confirm('Confirmas?')) return;
         await Database.clearAll();
         AppState = { accounts:[],incomes:[],expenses:[],recurringExpenses:[],savingsGoals:[],debts:[],transfers:[],notifications:[],lastCalculation:null };
-        updateAllUI(); toast('Datos borrados','warning');
+        updateAllUI(); vibrate(); toast('Datos borrados','warning');
     }
     // CORE
     function runTests() {
@@ -1530,11 +1545,13 @@
 
         } catch(e) {
             console.error('Init error:', e);
-            toast('Erro ao iniciar: ' + e.message, 'error');
+            vibrate(); toast('Erro ao iniciar: ' + e.message, 'error');
         }
     }
 
     document.addEventListener('DOMContentLoaded', init);
     </script>
-</body>
+    </body>
 </html>
+
+       
